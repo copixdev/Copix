@@ -21,7 +21,7 @@ export class ErrorBoundary extends Component<Props, State> {
 				<div className="page" style={{ padding: 48, textAlign: 'center' }}>
 					<img src={`${import.meta.env.BASE_URL}icon.png`} alt="" width={36} height={36} />
 					<h1>Something went wrong</h1>
-					<p className="hero-trust">{this.state.error.message}</p>
+					<p className="hero-sub">{this.state.error.message}</p>
 					<div className="hero-cta">
 						<button
 							type="button"
