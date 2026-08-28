@@ -1,187 +1,32 @@
-export type DetectedOs = 'mac' | 'windows' | 'linux' | 'mobile' | 'other';
-
-export type PlatformInfo = {
-	os: DetectedOs;
-	osLabel: string;
-	lang: string;
-	isKo: boolean;
-	desktopLabel: string;
-	desktopUrl: string;
-	desktopHint: string;
-	cliLabel: string;
-	cliCommand: string;
-	cliHint: string;
-	cliAltLabel: string;
-	cliAltCommand: string;
-};
-
-const GITHUB = 'https://github.com/copixdev/Copix';
-const SITE = 'https://copixdev.github.io/Copix/';
-const RELEASES = `${GITHUB}/releases`;
-const LATEST_RELEASE = `${GITHUB}/releases/tag/v4.3.0`;
-const MAC_DMG = `${GITHUB}/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg`;
-const WIN_EXE = `${GITHUB}/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe`;
-const CLI_SH =
+export const GITHUB = 'https://github.com/copixdev/Copix';
+export const SITE = 'https://copixdev.github.io/Copix/';
+export const RELEASES = `${GITHUB}/releases`;
+export const DESKTOP_VERSION = '4.3.0';
+export const LATEST_RELEASE = `${GITHUB}/releases/tag/v${DESKTOP_VERSION}`;
+export const MAC_DMG = `${GITHUB}/releases/download/v${DESKTOP_VERSION}/Copix-${DESKTOP_VERSION}-macOS-arm64.dmg`;
+export const WIN_EXE = `${GITHUB}/releases/download/v${DESKTOP_VERSION}/Copix-${DESKTOP_VERSION}-Windows-x64.exe`;
+export const CLI_SH =
 	'curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash';
-const CLI_PS =
+export const CLI_PS =
 	'irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex';
 
-/** Best-effort Apple Silicon signal (sync). Intel / unknown Mac → false. */
-export function isAppleSiliconMac(
-	ua: string,
-	platform: string,
-	hasWebglAppleGpu = (): boolean => {
-		if (typeof document === 'undefined') return false;
-		try {
-			const canvas = document.createElement('canvas');
-			const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-			if (!gl || !(gl instanceof WebGLRenderingContext)) return false;
-			const info = gl.getExtension('WEBGL_debug_renderer_info');
-			if (!info) return false;
-			const renderer = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL) || '');
-			// Apple Silicon reports e.g. "Apple M1" / "Apple GPU"; Intel Macs report Intel/AMD.
-			if (/intel|amd|radeon|nvidia/i.test(renderer)) return false;
-			return /apple\s*m\d|apple\s*gpu/i.test(renderer);
-		} catch {
-			return false;
-		}
-	},
-): boolean {
-	const lower = ua.toLowerCase();
-	const plat = String(platform).toLowerCase();
-	if (/arm64|aarch64/.test(lower)) return true;
-	// Some Chromium builds expose arch in UA-CH platform strings.
-	if (/arm/.test(plat) && /mac/.test(plat)) return true;
-	return hasWebglAppleGpu();
-}
+export type InstallOs = 'mac' | 'win';
 
-export function detectPlatform(
-	ua = typeof navigator !== 'undefined' ? navigator.userAgent : '',
-	lang = typeof navigator !== 'undefined' ? navigator.language : 'en',
-	platform =
-		typeof navigator !== 'undefined'
-			? (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData
-					?.platform ||
-				navigator.platform ||
-				''
-			: '',
-	maxTouchPoints = typeof navigator !== 'undefined' ? navigator.maxTouchPoints || 0 : 0,
-): PlatformInfo {
-	const lower = ua.toLowerCase();
-	const plat = String(platform).toLowerCase();
-
-	// iPhone/iPod always; iPad classic UA; iPadOS 13+ often reports as Macintosh + touch.
-	const isIOS =
-		/iphone|ipod/.test(lower) ||
-		/ipad/.test(lower) ||
-		(/macintosh/.test(lower) && maxTouchPoints > 1);
-	const isAndroid = /android/.test(lower);
-
-	let os: DetectedOs = 'other';
-	if (isIOS || isAndroid) os = 'mobile';
-	else if (/mac os|macintosh/.test(lower) || plat.includes('mac')) os = 'mac';
-	else if (/windows|win64|win32/.test(lower) || plat.includes('win')) os = 'windows';
-	else if ((/linux|x11/.test(lower) || plat.includes('linux')) && !isAndroid) os = 'linux';
-
-	const isKo = lang.toLowerCase().startsWith('ko');
-	const isArmMac = os === 'mac' && isAppleSiliconMac(ua, platform);
-
-	const osLabel =
-		os === 'mac'
-			? isArmMac
-				? 'macOS (Apple Silicon)'
-				: 'macOS (Intel)'
-			: os === 'windows'
-				? 'Windows'
-				: os === 'linux'
-					? 'Linux'
-					: os === 'mobile'
-						? isIOS
-							? 'iPhone / iPad'
-							: isKo
-								? '모바일'
-								: 'mobile'
-						: isKo
-							? '내 기기'
-							: 'your device';
-
-	const desktopLabel =
-		os === 'mac' && isArmMac
-			? isKo
-				? 'macOS용 Desktop 다운로드 (.DMG)'
-				: 'Download Desktop for macOS (.DMG)'
-			: os === 'windows'
-				? isKo
-					? 'Windows용 Desktop 다운로드 (.EXE)'
-					: 'Download Desktop for Windows (.EXE)'
-				: isKo
-					? '릴리스에서 Desktop 받기'
-					: 'Get Desktop from releases';
-
-	// Only Apple Silicon gets the arm64 DMG. Intel / unknown Mac → Releases.
-	const desktopUrl =
-		os === 'mac' && isArmMac ? MAC_DMG : os === 'windows' ? WIN_EXE : RELEASES;
-
-	const desktopHint = isKo
-		? os === 'mac' && isArmMac
-			? '감지됨: macOS Apple Silicon — DMG → Applications. “손상됨”이면: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
-			: os === 'mac'
-				? '감지됨: macOS Intel — arm64 DMG는 Apple Silicon용입니다. Releases에서 맞는 빌드를 고르세요.'
-				: os === 'windows'
-					? '감지됨: Windows — EXE 설치 파일을 실행하세요.'
-					: os === 'mobile'
-						? '모바일에서는 Desktop 설치 파일을 받지 않습니다. macOS/Windows 컴퓨터에서 Releases를 열거나 CLI를 설치하세요.'
-						: '릴리스 페이지에서 맞는 Desktop 빌드를 고르세요.'
-		: os === 'mac' && isArmMac
-			? 'Detected macOS Apple Silicon — open the DMG and drag into Applications. If “damaged”: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
-			: os === 'mac'
-				? 'Detected macOS Intel — the published DMG is arm64 (Apple Silicon). Open Releases to pick the right build.'
-				: os === 'windows'
-					? 'Detected Windows — run the EXE installer from the release.'
-					: os === 'mobile'
-						? 'Mobile detected — Desktop installers are for macOS and Windows. Open Releases on a computer, or use the CLI tab for install commands.'
-						: 'Pick the matching Desktop build on the releases page.';
-
-	const isWindows = os === 'windows';
-	const cliLabel = isWindows
-		? isKo
-			? 'Windows용 CLI 설치 (PowerShell)'
-			: 'Install CLI on Windows (PowerShell)'
-		: isKo
-			? 'macOS / Linux용 CLI 설치'
-			: 'Install CLI on macOS / Linux';
-	const cliCommand = isWindows ? CLI_PS : CLI_SH;
-	const cliAltLabel = isWindows
-		? isKo
-			? 'macOS / Linux'
-			: 'macOS / Linux'
-		: isKo
-			? 'Windows (PowerShell)'
-			: 'Windows (PowerShell)';
-	const cliAltCommand = isWindows ? CLI_SH : CLI_PS;
-
-	const cliHint = isKo
-		? os === 'mobile'
-			? 'CLI는 macOS, Linux, Windows 컴퓨터용입니다. 아래 명령을 데스크톱 터미널에서 실행하세요.'
-			: '계정 없음. Node.js 18+, git, Ollama만 있으면 됩니다. 설치 스크립트가 PATH에 영구 등록합니다.'
-		: os === 'mobile'
-			? 'CLI is for macOS, Linux, and Windows computers. Run the commands below in a desktop terminal.'
-			: 'No account. Needs Node.js 18+, git, and Ollama. The installer puts copix on your PATH permanently.';
-
+export function desktopDownload(os: InstallOs) {
+	if (os === 'mac') {
+		return {
+			osLabel: 'macOS',
+			archLabel: 'M series',
+			url: MAC_DMG,
+			button: `Download Copix for macOS`,
+			hint: 'Apple Silicon (M series) · arm64 DMG',
+		};
+	}
 	return {
-		os,
-		osLabel,
-		lang,
-		isKo,
-		desktopLabel,
-		desktopUrl,
-		desktopHint,
-		cliLabel,
-		cliCommand,
-		cliHint,
-		cliAltLabel,
-		cliAltCommand,
+		osLabel: 'Windows',
+		archLabel: 'x64',
+		url: WIN_EXE,
+		button: `Download Copix for Windows`,
+		hint: 'Windows x64 · EXE installer',
 	};
 }
-
-export { GITHUB, SITE, RELEASES, LATEST_RELEASE, CLI_SH, CLI_PS, MAC_DMG, WIN_EXE };
