@@ -17,10 +17,12 @@ type InstallTab = 'desktop' | 'cli';
 
 export default function Landing() {
 	const platform = useMemo(() => detectPlatform(), []);
-	const [tab, setTab] = useState<InstallTab>(platform.os === 'linux' ? 'cli' : 'desktop');
+	const [tab, setTab] = useState<InstallTab>(
+		platform.os === 'mac' || platform.os === 'windows' ? 'desktop' : 'cli',
+	);
 	const [copied, setCopied] = useState<'cli' | 'alt' | 'xattr' | null>(null);
 	const location = useLocation();
-	const demoSrc = `${import.meta.env.BASE_URL}demo.mov`;
+	const demoSrc = `${import.meta.env.BASE_URL}demo.mp4`;
 
 	useEffect(() => {
 		document.title = 'Copix — A local coding agent. Pixel-precise.';
@@ -35,7 +37,9 @@ export default function Landing() {
 				setTab('desktop');
 			}
 			const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-			const target = hash === '#cli' || hash === '#install-cli' ? '#install' : hash;
+			// Scroll to the install section for both Desktop and CLI hashes.
+			const target =
+				hash === '#cli' || hash === '#install-cli' || hash === '#install' ? '#install' : hash;
 			window.setTimeout(() => scrollToHash(target, reduced ? 'auto' : 'smooth'), 40);
 		}
 		applyHash(location.hash);
@@ -67,10 +71,10 @@ export default function Landing() {
 						accounts, MIT, sessions sync through <code>~/Copix</code>.
 					</p>
 					<div className="hero-cta">
-						<a className="btn primary lg" href="#install" onClick={() => setTab('desktop')}>
+						<a className="btn primary lg" href="#install">
 							Get Desktop
 						</a>
-						<a className="btn ghost lg" href="#install" onClick={() => setTab('cli')}>
+						<a className="btn ghost lg" href="#install-cli">
 							Install CLI
 						</a>
 					</div>
@@ -88,10 +92,9 @@ export default function Landing() {
 							preload="metadata"
 							poster={`${import.meta.env.BASE_URL}icon.png`}
 						>
-							<source src={demoSrc} type="video/quicktime" />
 							<source src={demoSrc} type="video/mp4" />
 						</video>
-						<figcaption>Real product demo · demo.mov</figcaption>
+						<figcaption>Real product demo · demo.mp4</figcaption>
 					</figure>
 				</section>
 
@@ -120,6 +123,8 @@ export default function Landing() {
 
 				{/* 4. Install */}
 				<section className="install-section" id="install">
+					{/* Distinct hash target so #install-cli opens the CLI tab without flipping to Desktop. */}
+					<span id="install-cli" hidden />
 					<div className="section-head">
 						<h2>Install</h2>
 						<p>Pick Desktop or CLI. OS detection picks a sensible default; both stay local.</p>
@@ -131,17 +136,22 @@ export default function Landing() {
 							role="tab"
 							aria-selected={tab === 'desktop'}
 							className={tab === 'desktop' ? 'active' : ''}
-							onClick={() => setTab('desktop')}
+							onClick={() => {
+								setTab('desktop');
+								window.history.replaceState(null, '', '#install');
+							}}
 						>
 							Desktop
 						</button>
 						<button
 							type="button"
 							role="tab"
-							id="install-cli"
 							aria-selected={tab === 'cli'}
 							className={tab === 'cli' ? 'active' : ''}
-							onClick={() => setTab('cli')}
+							onClick={() => {
+								setTab('cli');
+								window.history.replaceState(null, '', '#install-cli');
+							}}
 						>
 							CLI
 						</button>
