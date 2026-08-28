@@ -12,7 +12,7 @@ Installers for **Copix Desktop** (macOS + Windows). Copix is open source under t
 
 Checksums: [`SHA256SUMS.txt`](./SHA256SUMS.txt)
 
-Also published as GitHub Release **[v4.3.0](https://github.com/EJH-BAE/Copix/releases/tag/v4.3.0)**.
+Also published as GitHub Release **[v4.3.0](https://github.com/copixdev/Copix/releases/tag/v4.3.0)**.
 
 ## macOS: “Copix is damaged and can’t be opened”
 
@@ -29,7 +29,7 @@ open /Applications/Copix.app
 Or one shot after install:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EJH-BAE/Copix/main/release/fix-macos-quarantine.sh | bash
+curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/main/release/fix-macos-quarantine.sh | bash
 ```
 
 Alternative: Finder → Applications → **Control-click** Copix → **Open** → **Open**.
@@ -39,13 +39,13 @@ Alternative: Finder → Applications → **Control-click** Copix → **Open** �
 macOS / Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EJH-BAE/Copix/refs/heads/main/cli/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash
 ```
 
 Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/EJH-BAE/Copix/refs/heads/main/cli/install.ps1 | iex
+irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex
 ```
 
 Then: `ollama pull qwen2.5:3b` → `copix doctor` → `copix`

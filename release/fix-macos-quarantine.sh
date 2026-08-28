@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Clear macOS Gatekeeper quarantine so Copix.app can open after a browser download.
-# curl -fsSL https://raw.githubusercontent.com/EJH-BAE/Copix/main/release/fix-macos-quarantine.sh | bash
+# curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/main/release/fix-macos-quarantine.sh | bash
 set -euo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
