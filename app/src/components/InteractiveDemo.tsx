@@ -178,6 +178,7 @@ export function InteractiveDemo() {
 	const modelRef = useRef(model);
 	const dragRef = useRef<{ win: WinId; dx: number; dy: number } | null>(null);
 	const followUpLock = useRef(false);
+	const followUpQueue = useRef<string[]>([]);
 
 	phaseRef.current = phase;
 	modelRef.current = model;
@@ -222,6 +223,7 @@ export function InteractiveDemo() {
 		abortRef.current = ac;
 		const { signal } = ac;
 		followUpLock.current = false;
+		followUpQueue.current = [];
 
 		async function markStatus(text: string) {
 			const id = uid();
@@ -395,14 +397,19 @@ export function InteractiveDemo() {
 
 	async function sendFollowUp(text: string) {
 		const trimmed = text.trim();
-		if (!trimmed || followUpLock.current) return;
+		if (!trimmed) return;
+		setDesktopInput('');
+		setCliInput('');
+		if (followUpLock.current) {
+			followUpQueue.current.push(trimmed);
+			return;
+		}
 		const signal = abortRef.current?.signal;
 		if (!signal || signal.aborted) return;
 		followUpLock.current = true;
-		setDesktopInput('');
-		setCliInput('');
 		setItems((prev) => [...prev, { id: uid(), kind: 'user', text: trimmed }]);
 		setPhase('playing');
+		phaseRef.current = 'playing';
 		try {
 			const st = uid();
 			setItems((prev) => [...prev, { id: st, kind: 'status', text: 'Thinking', done: false }]);
@@ -410,10 +417,13 @@ export function InteractiveDemo() {
 			setItems((prev) => prev.map((row) => (row.id === st ? { ...row, done: true } : row)));
 			await typeAgent(setItems, followUpReply(trimmed, modelRef.current), signal);
 			setPhase('done');
+			phaseRef.current = 'done';
 		} catch {
 			/* aborted */
 		} finally {
 			followUpLock.current = false;
+			const next = followUpQueue.current.shift();
+			if (next) void sendFollowUp(next);
 		}
 	}
 

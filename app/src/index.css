@@ -353,26 +353,33 @@ section[id],
 .mac-win.focused {
 	box-shadow:
 		0 28px 70px rgba(0, 0, 0, 0.5),
-		0 0 0 1px rgba(255, 255, 255, 0.16);
-	z-index: 5;
+		0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
 .desk-win {
-	left: 3.2%;
+	left: 3%;
 	top: 108px;
-	width: 73%;
-	height: calc(100% - 168px);
+	width: 66%;
+	height: calc(100% - 210px);
 	background: #161618;
 	z-index: 3;
 }
 
-.cli-win {
-	right: 3%;
-	bottom: 58px;
-	width: min(46%, 520px);
-	height: 44%;
-	background: #0a0a0b;
+.desk-win.focused {
 	z-index: 4;
+}
+
+.cli-win {
+	right: 2.5%;
+	bottom: 52px;
+	width: min(48%, 540px);
+	height: 50%;
+	background: #0a0a0b;
+	z-index: 5;
+}
+
+.cli-win.focused {
+	z-index: 6;
 }
 
 .mac-titlebar {
