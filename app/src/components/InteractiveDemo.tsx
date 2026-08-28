@@ -153,9 +153,15 @@ function CodePane({ file, reveal }: { file: EditorFile; reveal: number }) {
 	);
 }
 
-export function InteractiveDemo() {
-	const [sceneId, setSceneId] = useState<SceneId>('sync');
+type DemoProps = {
+	sceneId: SceneId;
+	/** Optional DOM id for the stage (first chapter uses `demo`). */
+	stageId?: string;
+};
+
+export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 	const [runId, setRunId] = useState(0);
+	const [armed, setArmed] = useState(false);
 	const [items, setItems] = useState<ChatItem[]>([]);
 	const [files, setFiles] = useState<EditorFile[]>([PRD_FILE]);
 	const [activeFile, setActiveFile] = useState(PRD_FILE.name);
@@ -165,7 +171,7 @@ export function InteractiveDemo() {
 	const [desktopInput, setDesktopInput] = useState('');
 	const [cliInput, setCliInput] = useState('');
 	const [reveal, setReveal] = useState(99);
-	const [focus, setFocus] = useState<WinId>('cli');
+	const [focus, setFocus] = useState<WinId>('desktop');
 	const [deskOffset, setDeskOffset] = useState({ x: 0, y: 0 });
 	const [cliOffset, setCliOffset] = useState({ x: 0, y: 0 });
 	const [now, setNow] = useState('Fri  2:14 PM');
@@ -198,6 +204,19 @@ export function InteractiveDemo() {
 	}, []);
 
 	useEffect(() => {
+		const el = stageRef.current;
+		if (!el) return;
+		const io = new IntersectionObserver(
+			([entry]) => {
+				if (entry?.isIntersecting) setArmed(true);
+			},
+			{ threshold: 0.28, rootMargin: '0px 0px -8% 0px' },
+		);
+		io.observe(el);
+		return () => io.disconnect();
+	}, []);
+
+	useEffect(() => {
 		for (const el of [deskThread.current, cliThread.current]) {
 			if (!el) continue;
 			el.scrollTo({ top: el.scrollHeight, behavior: reducedMotion() ? 'auto' : 'smooth' });
@@ -219,6 +238,7 @@ export function InteractiveDemo() {
 	}, []);
 
 	useEffect(() => {
+		if (!armed) return;
 		const ac = new AbortController();
 		abortRef.current = ac;
 		const { signal } = ac;
@@ -238,6 +258,7 @@ export function InteractiveDemo() {
 			setCliInput('');
 			setPhase('playing');
 			phaseRef.current = 'playing';
+			setFocus('desktop');
 			if (sceneId === 'sync') {
 				setFiles([PRD_FILE, VIEW_FILE_BEFORE]);
 				setActiveFile(PRD_FILE.name);
@@ -293,12 +314,12 @@ export function InteractiveDemo() {
 				setFiles([VIEW_FILE_AFTER, APP_FILE]);
 				setActiveFile(VIEW_FILE_AFTER.name);
 				await animateReveal(VIEW_FILE_AFTER, signal);
-				setPlan(
-					TOOLS_PLAN.map((step, i) => ({
-						...step,
-						status: i === 0 ? 'done' : i === 1 ? 'done' : 'current',
-					})),
-				);
+			setPlan(
+				TOOLS_PLAN.map((step, i) => ({
+					...step,
+					status: i < 2 ? 'done' : 'current',
+				})),
+			);
 				await markStatus('terminal · npx tsc --noEmit');
 				setItems((prev) => [
 					...prev,
@@ -362,7 +383,7 @@ export function InteractiveDemo() {
 		});
 
 		return () => ac.abort();
-	}, [runId, sceneId, animateReveal]);
+	}, [armed, runId, sceneId, animateReveal]);
 
 	async function completeQuestion(index: number) {
 		const signal = abortRef.current?.signal;
@@ -387,7 +408,7 @@ export function InteractiveDemo() {
 			setFiles([PRD_FILE, VIEW_FILE_AFTER]);
 			setActiveFile(VIEW_FILE_AFTER.name);
 			await animateReveal(VIEW_FILE_AFTER, signal);
-			setPlan(SYNC_PLAN.map((step, i) => ({ ...step, status: i < 2 ? 'done' : 'done' })));
+			setPlan(SYNC_PLAN.map((step) => ({ ...step, status: 'done' })));
 			setPhase('done');
 			phaseRef.current = 'done';
 		} catch {
@@ -443,11 +464,6 @@ export function InteractiveDemo() {
 		void sendFollowUp(cliInput);
 	}
 
-	function switchScene(id: SceneId) {
-		setSceneId(id);
-		setRunId((n) => n + 1);
-	}
-
 	function onModelChange(next: string) {
 		setModel(next);
 		modelRef.current = next;
@@ -486,7 +502,13 @@ export function InteractiveDemo() {
 	}
 
 	return (
-		<div className="mac-stage" id="demo" ref={stageRef} style={{ backgroundImage: `url(${WALLPAPER})` }}>
+		<div
+			className="mac-stage"
+			id={stageId}
+			ref={stageRef}
+			style={{ backgroundImage: `url(${WALLPAPER})` }}
+			aria-label={`Copix ${scene.label} demo`}
+		>
 			<div className="mac-menubar">
 				<div className="mac-menubar-left">
 					<span className="mac-apple" aria-hidden>
@@ -500,26 +522,10 @@ export function InteractiveDemo() {
 				</div>
 				<div className="mac-menubar-right">
 					<span className="mac-pill">~/Copix</span>
+					<span className="mac-pill">{scene.label}</span>
 					<span>{now}</span>
 				</div>
 			</div>
-
-			<div className="mac-scene-tabs" role="tablist" aria-label="Demo scenes">
-				{SCENES.map((s) => (
-					<button
-						key={s.id}
-						type="button"
-						role="tab"
-						aria-selected={sceneId === s.id}
-						className={sceneId === s.id ? 'active' : ''}
-						onClick={() => switchScene(s.id)}
-					>
-						{s.label}
-					</button>
-				))}
-			</div>
-
-			<div className="mac-scene-blurb">{scene.blurb}</div>
 
 			<div
 				className={`mac-win desk-win ${focus === 'desktop' ? 'focused' : ''}`}

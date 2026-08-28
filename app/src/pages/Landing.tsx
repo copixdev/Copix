@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { InteractiveDemo } from '../components/InteractiveDemo';
 import { SiteNav } from '../components/SiteNav';
+import { SCENES } from '../lib/demo-session';
 import {
 	CLI_PS,
 	CLI_SH,
@@ -14,6 +15,12 @@ import {
 import { scrollToHash } from '../lib/scroll';
 
 const tools = ['create_project', 'edit_file', 'terminal', 'web_search', 'web_fetch'] as const;
+
+const CHAPTER_IDS: Record<(typeof SCENES)[number]['id'], string> = {
+	sync: 'demo',
+	tools: 'demo-tools',
+	models: 'demo-models',
+};
 
 type InstallTab = 'desktop' | 'cli';
 
@@ -83,31 +90,43 @@ export default function Landing() {
 					<p className="hero-meta">Desktop v{DESKTOP_VERSION} · Apple Silicon + Windows · No login</p>
 				</section>
 
-				<section className="stage-section" aria-label="Interactive Copix demo">
-					<InteractiveDemo />
-				</section>
-
-				<section className="product" id="product">
-					<div className="section-head">
-						<h2>One agent, two windows</h2>
-						<p>
-							Same tools, same files, same plan. Type in Desktop or the CLI — the other catches up in
-							real time.
-						</p>
-					</div>
-					<ul className="tool-list" aria-label="Agent tools">
-						{tools.map((name) => (
-							<li key={name}>
-								<code>{name}</code>
-							</li>
-						))}
-					</ul>
-				</section>
+				{SCENES.map((chapter) => (
+					<section
+						key={chapter.id}
+						className="demo-chapter"
+						id={CHAPTER_IDS[chapter.id]}
+						aria-labelledby={`${chapter.id}-title`}
+					>
+						<div className="section-head">
+							<p className="chapter-kicker">{chapter.label}</p>
+							<h2 id={`${chapter.id}-title`}>
+								{chapter.id === 'sync'
+									? 'One session, two windows'
+									: chapter.id === 'tools'
+										? 'Tools land as real diffs'
+										: 'Flip the model, same plan'}
+							</h2>
+							<p>{chapter.blurb}</p>
+						</div>
+						<div className="stage-section">
+							<InteractiveDemo sceneId={chapter.id} />
+						</div>
+						{chapter.id === 'sync' ? (
+							<ul className="tool-list" aria-label="Agent tools">
+								{tools.map((name) => (
+									<li key={name}>
+										<code>{name}</code>
+									</li>
+								))}
+							</ul>
+						) : null}
+					</section>
+				))}
 
 				<section className="watch-section" id="watch">
 					<div className="section-head">
 						<h2>Watch demo</h2>
-						<p>A recorded pass through Copix Desktop. The stage above is the live mock.</p>
+						<p>A recorded pass through Copix Desktop. The stages above are the live mocks.</p>
 					</div>
 					<figure className="watch-video">
 						<video controls playsInline preload="metadata" poster={`${import.meta.env.BASE_URL}icon.png`}>

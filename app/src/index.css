@@ -75,7 +75,9 @@ code {
 section[id],
 #install-cli,
 #watch,
-#demo {
+#demo,
+#demo-tools,
+#demo-models {
 	scroll-margin-top: calc(var(--nav-h) + 12px);
 }
 
@@ -232,9 +234,34 @@ section[id],
 	color: var(--ink-3);
 }
 
-/* —— macOS stage —— */
+/* —— Demo chapters + macOS stage —— */
+.demo-chapter {
+	padding: calc(var(--space) * 6) 0 calc(var(--space) * 4);
+}
+
+.demo-chapter .section-head {
+	max-width: 640px;
+	margin: 0 auto calc(var(--space) * 3);
+	padding: 0 calc(var(--space) * 3);
+}
+
+.chapter-kicker {
+	margin: 0 0 10px;
+	font-family: var(--font-mono);
+	font-size: 12px;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--ink-3);
+	font-weight: 600;
+}
+
+.demo-chapter .tool-list {
+	margin-top: calc(var(--space) * 3);
+	padding: 0 calc(var(--space) * 3);
+}
+
 .stage-section {
-	padding: 8px max(16px, calc((100% - var(--stage-max)) / 2)) 12px;
+	padding: 0 max(16px, calc((100% - var(--stage-max)) / 2));
 }
 
 .mac-stage {
@@ -291,53 +318,6 @@ section[id],
 	background: rgba(255, 255, 255, 0.12);
 }
 
-.mac-scene-tabs {
-	position: absolute;
-	top: 40px;
-	left: 50%;
-	z-index: 8;
-	transform: translateX(-50%);
-	display: flex;
-	gap: 2px;
-	padding: 3px;
-	border-radius: 999px;
-	background: rgba(12, 10, 8, 0.38);
-	backdrop-filter: blur(14px);
-	border: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.mac-scene-tabs button {
-	border: 0;
-	background: transparent;
-	color: rgba(255, 255, 255, 0.78);
-	font: inherit;
-	font-size: 12px;
-	font-weight: 700;
-	padding: 6px 14px;
-	border-radius: 999px;
-	cursor: pointer;
-}
-
-.mac-scene-tabs button.active {
-	background: #fff;
-	color: #111;
-}
-
-.mac-scene-blurb {
-	position: absolute;
-	top: 78px;
-	left: 50%;
-	z-index: 8;
-	transform: translateX(-50%);
-	width: min(520px, 80%);
-	text-align: center;
-	color: rgba(255, 255, 255, 0.9);
-	font-size: 12.5px;
-	font-weight: 500;
-	text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
-	pointer-events: none;
-}
-
 .mac-win {
 	position: absolute;
 	display: flex;
@@ -358,9 +338,9 @@ section[id],
 
 .desk-win {
 	left: 3%;
-	top: 108px;
+	top: 48px;
 	width: 66%;
-	height: calc(100% - 210px);
+	height: calc(100% - 150px);
 	background: #161618;
 	z-index: 3;
 }
@@ -1174,8 +1154,7 @@ section[id],
 	font-size: 13px;
 }
 
-/* —— Product / watch / install —— */
-.product,
+/* —— Watch / install —— */
 .watch-section,
 .install-section {
 	max-width: var(--max);
@@ -1547,16 +1526,8 @@ section[id],
 		min-height: 0;
 		display: flex;
 		flex-direction: column;
-		padding: 72px 10px 72px;
+		padding: 40px 10px 72px;
 		gap: 12px;
-	}
-
-	.mac-scene-blurb {
-		position: static;
-		transform: none;
-		width: auto;
-		margin: 0 8px 4px;
-		align-self: center;
 	}
 
 	.desk-win,
@@ -1586,9 +1557,9 @@ section[id],
 		min-height: 220px;
 	}
 
-	.product,
 	.watch-section,
-	.install-section {
+	.install-section,
+	.demo-chapter .section-head {
 		padding-left: 18px;
 		padding-right: 18px;
 	}
