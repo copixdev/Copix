@@ -26,6 +26,35 @@ const CLI_SH =
 const CLI_PS =
 	'irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex';
 
+/** Best-effort Apple Silicon signal (sync). Intel / unknown Mac → false. */
+export function isAppleSiliconMac(
+	ua: string,
+	platform: string,
+	hasWebglAppleGpu = (): boolean => {
+		if (typeof document === 'undefined') return false;
+		try {
+			const canvas = document.createElement('canvas');
+			const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+			if (!gl || !(gl instanceof WebGLRenderingContext)) return false;
+			const info = gl.getExtension('WEBGL_debug_renderer_info');
+			if (!info) return false;
+			const renderer = String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL) || '');
+			// Apple Silicon reports e.g. "Apple M1" / "Apple GPU"; Intel Macs report Intel/AMD.
+			if (/intel|amd|radeon|nvidia/i.test(renderer)) return false;
+			return /apple\s*m\d|apple\s*gpu/i.test(renderer);
+		} catch {
+			return false;
+		}
+	},
+): boolean {
+	const lower = ua.toLowerCase();
+	const plat = String(platform).toLowerCase();
+	if (/arm64|aarch64/.test(lower)) return true;
+	// Some Chromium builds expose arch in UA-CH platform strings.
+	if (/arm/.test(plat) && /mac/.test(plat)) return true;
+	return hasWebglAppleGpu();
+}
+
 export function detectPlatform(
 	ua = typeof navigator !== 'undefined' ? navigator.userAgent : '',
 	lang = typeof navigator !== 'undefined' ? navigator.language : 'en',
@@ -55,22 +84,20 @@ export function detectPlatform(
 	else if ((/linux|x11/.test(lower) || plat.includes('linux')) && !isAndroid) os = 'linux';
 
 	const isKo = lang.toLowerCase().startsWith('ko');
-	const isArmMac = os === 'mac' && (/arm|aarch64/.test(lower) || /apple/.test(plat));
+	const isArmMac = os === 'mac' && isAppleSiliconMac(ua, platform);
 
 	const osLabel =
 		os === 'mac'
 			? isArmMac
 				? 'macOS (Apple Silicon)'
-				: 'macOS'
+				: 'macOS (Intel)'
 			: os === 'windows'
 				? 'Windows'
 				: os === 'linux'
 					? 'Linux'
 					: os === 'mobile'
 						? isIOS
-							? isKo
-								? 'iPhone / iPad'
-								: 'iPhone / iPad'
+							? 'iPhone / iPad'
 							: isKo
 								? '모바일'
 								: 'mobile'
@@ -79,7 +106,7 @@ export function detectPlatform(
 							: 'your device';
 
 	const desktopLabel =
-		os === 'mac'
+		os === 'mac' && isArmMac
 			? isKo
 				? 'macOS용 Desktop 다운로드 (.DMG)'
 				: 'Download Desktop for macOS (.DMG)'
@@ -91,23 +118,29 @@ export function detectPlatform(
 					? '릴리스에서 Desktop 받기'
 					: 'Get Desktop from releases';
 
-	const desktopUrl = os === 'mac' ? MAC_DMG : os === 'windows' ? WIN_EXE : RELEASES;
+	// Only Apple Silicon gets the arm64 DMG. Intel / unknown Mac → Releases.
+	const desktopUrl =
+		os === 'mac' && isArmMac ? MAC_DMG : os === 'windows' ? WIN_EXE : RELEASES;
 
 	const desktopHint = isKo
-		? os === 'mac'
-			? '감지됨: macOS — DMG → Applications. “손상됨”이면: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
-			: os === 'windows'
-				? '감지됨: Windows — EXE 설치 파일을 실행하세요.'
-				: os === 'mobile'
-					? '모바일에서는 Desktop 설치 파일을 받지 않습니다. macOS/Windows 컴퓨터에서 Releases를 열거나 CLI를 설치하세요.'
-					: '릴리스 페이지에서 맞는 Desktop 빌드를 고르세요.'
-		: os === 'mac'
-			? 'Detected macOS — open the DMG and drag into Applications. If “damaged”: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
-			: os === 'windows'
-				? 'Detected Windows — run the EXE installer from the release.'
-				: os === 'mobile'
-					? 'Mobile detected — Desktop installers are for macOS and Windows. Open Releases on a computer, or use the CLI tab for install commands.'
-					: 'Pick the matching Desktop build on the releases page.';
+		? os === 'mac' && isArmMac
+			? '감지됨: macOS Apple Silicon — DMG → Applications. “손상됨”이면: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
+			: os === 'mac'
+				? '감지됨: macOS Intel — arm64 DMG는 Apple Silicon용입니다. Releases에서 맞는 빌드를 고르세요.'
+				: os === 'windows'
+					? '감지됨: Windows — EXE 설치 파일을 실행하세요.'
+					: os === 'mobile'
+						? '모바일에서는 Desktop 설치 파일을 받지 않습니다. macOS/Windows 컴퓨터에서 Releases를 열거나 CLI를 설치하세요.'
+						: '릴리스 페이지에서 맞는 Desktop 빌드를 고르세요.'
+		: os === 'mac' && isArmMac
+			? 'Detected macOS Apple Silicon — open the DMG and drag into Applications. If “damaged”: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
+			: os === 'mac'
+				? 'Detected macOS Intel — the published DMG is arm64 (Apple Silicon). Open Releases to pick the right build.'
+				: os === 'windows'
+					? 'Detected Windows — run the EXE installer from the release.'
+					: os === 'mobile'
+						? 'Mobile detected — Desktop installers are for macOS and Windows. Open Releases on a computer, or use the CLI tab for install commands.'
+						: 'Pick the matching Desktop build on the releases page.';
 
 	const isWindows = os === 'windows';
 	const cliLabel = isWindows
