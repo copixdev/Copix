@@ -27,7 +27,7 @@ type EditorSnap = {
 	tasksDone: number;
 };
 
-type SceneId = 'studio' | 'cli';
+type SceneId = 'desktop' | 'cli';
 
 const scenes: Record<
 	SceneId,
@@ -43,7 +43,7 @@ const scenes: Record<
 		followUps: DemoItem[];
 	}
 > = {
-	studio: {
+	desktop: {
 		label: 'Desktop',
 		chrome: 'Copix Desktop',
 		history: [
@@ -58,7 +58,7 @@ const scenes: Record<
 			'Update AppManager.tsx for triggers',
 		],
 		script: [
-			{ kind: 'user', text: 'Plan a Mission Control interface for macOS Studio' },
+			{ kind: 'user', text: 'Plan a Mission Control interface for macOS Desktop' },
 			{ kind: 'status', text: 'Thinking' },
 			{ kind: 'status', text: 'Reading AppManager.tsx' },
 			{ kind: 'status', text: 'Searched codebase for expose patterns' },
@@ -85,7 +85,7 @@ const scenes: Record<
 				path: 'Plans › feature-prd.md',
 				title: 'Mission Control Interface',
 				body: [
-					'Overview of open Studio windows in a grid.',
+					'Overview of open Desktop windows in a grid.',
 					'Triggers undecided — waiting on your choice.',
 					'Reuse expose-style layout from AppManager.',
 				],
@@ -253,7 +253,7 @@ async function typeIntoLastAgent(
 }
 
 export function InteractiveDemo() {
-	const [sceneId, setSceneId] = useState<SceneId>('studio');
+	const [sceneId, setSceneId] = useState<SceneId>('desktop');
 	const scene = scenes[sceneId];
 	const [items, setItems] = useState<DemoItem[]>([]);
 	const [input, setInput] = useState('');
@@ -420,7 +420,7 @@ export function InteractiveDemo() {
 	}
 
 	return (
-		<div className="demo demo-studio" aria-label="Copix agent simulation">
+		<div className="demo demo-desktop" aria-label="Copix agent simulation">
 			<div className="demo-scene-switch" role="tablist" aria-label="Demo scene">
 				{(Object.keys(scenes) as SceneId[]).map((id) => (
 					<button
@@ -441,7 +441,7 @@ export function InteractiveDemo() {
 				<div className="demo-title">{scene.chrome}</div>
 				<div className="demo-chrome-meta">
 					{building ? <em className="demo-pulse">Building…</em> : null}
-					Grok 4.5 · Plan
+					qwen2.5:3b · Plan
 				</div>
 			</div>
 
@@ -576,7 +576,7 @@ export function InteractiveDemo() {
 					</form>
 					<div className="demo-composer-meta">
 						<span className="demo-mode">Plan</span>
-						<span className="demo-model">Grok 4.5</span>
+						<span className="demo-model">qwen2.5:3b</span>
 						<button type="button" className="demo-replay" onClick={() => setRunId((n) => n + 1)}>
 							Replay
 						</button>

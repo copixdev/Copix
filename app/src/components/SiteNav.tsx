@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { GITHUB } from '../lib/platform';
 
 const ICON = `${import.meta.env.BASE_URL}icon.png`;
 
@@ -10,14 +11,19 @@ export function SiteNav() {
 				<span>Copix</span>
 			</Link>
 			<nav className="nav-links" aria-label="Primary">
-				<Link to={{ pathname: '/', hash: 'product' }}>Product</Link>
-				<Link to={{ pathname: '/', hash: 'demo' }}>Demo</Link>
-				<Link to={{ pathname: '/', hash: 'install' }}>Install</Link>
-				<Link to={{ pathname: '/', hash: 'cli' }}>CLI</Link>
+				<a href="#demo">Demo</a>
+				<a href="#install">Install</a>
+				<a href={GITHUB} target="_blank" rel="noreferrer">
+					GitHub
+				</a>
 			</nav>
 			<div className="nav-actions">
-				<a className="btn ghost" href="#install">Desktop</a>
-				<a className="btn primary" href="#cli">Get CLI</a>
+				<a className="btn primary" href="#install">
+					Get Desktop
+				</a>
+				<a className="btn ghost" href="#install-cli">
+					CLI
+				</a>
 			</div>
 		</header>
 	);
