@@ -22,7 +22,7 @@
 
 ---
 
-<p align="center"><strong><a href="https://github.com/EJH-BAE/Copix/blob/main/demo.mov">Watch Demo (.mov)</strong>
+<p align="center"><strong><a href="https://github.com/copixdev/Copix/blob/main/demo.mov">Watch Demo (.mov)</strong>
 
 
 ## Introduction
@@ -64,7 +64,7 @@ Copix works like this:
 Requires [Node.js 18+](https://nodejs.org) and `git`.
 
 ```bash
-git clone https://github.com/EJH-BAE/Copix.git
+git clone https://github.com/copixdev/Copix.git
 cd Copix/cli
 npm install
 npm start
@@ -73,13 +73,13 @@ npm start
 One-shot install (macOS / Linux):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EJH-BAE/Copix/refs/heads/main/cli/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash
 ```
 
 Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/EJH-BAE/Copix/refs/heads/main/cli/install.ps1 | iex
+irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex
 ```
 
 Then:
@@ -92,7 +92,7 @@ copix
 
 ### Desktop
 
-Prebuilt installers are in [`release/`](release/) and on [GitHub Releases](https://github.com/EJH-BAE/Copix/releases/tag/v4.3.0).
+Prebuilt installers are in [`release/`](release/) and on [GitHub Releases](https://github.com/copixdev/Copix/releases/tag/v4.3.0).
 
 ## Programs
 Copix has a **CLI** version and a **Desktop** version. <br/>
@@ -144,8 +144,8 @@ Copix's outputs are all created with `JSON`.
 
 ## Installation
 
-Get the latest installers for your OS [here](https://github.com/EJH-BAE/Copix/releases/latest).
-For older versions, try looking at [Releases](https://github.com/EJH-BAE/Copix/releases).
+Get the latest installers for your OS [here](https://github.com/copixdev/Copix/releases/latest).
+For older versions, try looking at [Releases](https://github.com/copixdev/Copix/releases).
 
 
 ## License
@@ -154,4 +154,4 @@ See [LICENSE.txt](LICENSE.txt). Copix is open source under the MIT License.
 
 ## Links
 - [Ollama](https://ollama.com)
-- [Copix](https://ejh-bae.github.io/Copix/)
+- [Copix](https://copixdev.github.io/Copix/)
