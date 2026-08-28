@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { InteractiveDemo } from '../components/InteractiveDemo';
 import { SiteNav } from '../components/SiteNav';
 import { detectPlatform, GITHUB, RELEASES } from '../lib/platform';
 import { scrollToHash } from '../lib/scroll';
@@ -106,10 +105,6 @@ export default function Landing() {
 							Same tools, same sessions under <code>~/Copix</code>. Hand work to the agent; you stay on
 							decisions.
 						</p>
-					</div>
-
-					<div className="product-visual">
-						<InteractiveDemo />
 					</div>
 
 					<ul className="tool-list" aria-label="Agent tools">
