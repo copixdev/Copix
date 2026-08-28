@@ -15,66 +15,79 @@ export type PlatformInfo = {
 	cliAltCommand: string;
 };
 
-const GITHUB = 'https://github.com/EJH-BAE/Copix';
+const GITHUB = 'https://github.com/copixdev/Copix';
+const SITE = 'https://copixdev.github.io/Copix/';
 const RELEASES = `${GITHUB}/releases`;
+const LATEST_RELEASE = `${GITHUB}/releases/tag/v4.3.0`;
 const MAC_DMG = `${GITHUB}/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg`;
 const WIN_EXE = `${GITHUB}/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe`;
-const CLI_SH = 'curl -fsSL https://raw.githubusercontent.com/EJH-BAE/Copix/refs/heads/main/cli/install.sh | bash';
-const CLI_PS = 'irm https://raw.githubusercontent.com/EJH-BAE/Copix/refs/heads/main/cli/install.ps1 | iex';
+const CLI_SH =
+	'curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash';
+const CLI_PS =
+	'irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex';
 
 export function detectPlatform(
 	ua = typeof navigator !== 'undefined' ? navigator.userAgent : '',
 	lang = typeof navigator !== 'undefined' ? navigator.language : 'en',
 	platform =
 		typeof navigator !== 'undefined'
-			? (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform
-				|| navigator.platform
-				|| ''
+			? (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData
+					?.platform ||
+				navigator.platform ||
+				''
 			: '',
 ): PlatformInfo {
 	const lower = ua.toLowerCase();
 	const plat = String(platform).toLowerCase();
 	let os: DetectedOs = 'other';
-	if (/iphone|ipad|ipod/.test(lower) || /mac os|macintosh/.test(lower) || plat.includes('mac')) os = 'mac';
+	if (/iphone|ipad|ipod/.test(lower) || /mac os|macintosh/.test(lower) || plat.includes('mac'))
+		os = 'mac';
 	else if (/windows|win64|win32/.test(lower) || plat.includes('win')) os = 'windows';
-	else if ((/linux|x11/.test(lower) || plat.includes('linux')) && !/android/.test(lower)) os = 'linux';
+	else if ((/linux|x11/.test(lower) || plat.includes('linux')) && !/android/.test(lower))
+		os = 'linux';
 
 	const isKo = lang.toLowerCase().startsWith('ko');
 	const isArmMac = os === 'mac' && (/arm|aarch64/.test(lower) || /apple/.test(plat));
 
 	const osLabel =
-		os === 'mac' ? (isArmMac ? 'macOS (Apple Silicon)' : 'macOS') :
-		os === 'windows' ? 'Windows' :
-		os === 'linux' ? 'Linux' :
-		isKo ? '내 기기' : 'your device';
+		os === 'mac'
+			? isArmMac
+				? 'macOS (Apple Silicon)'
+				: 'macOS'
+			: os === 'windows'
+				? 'Windows'
+				: os === 'linux'
+					? 'Linux'
+					: isKo
+						? '내 기기'
+						: 'your device';
 
 	const desktopLabel =
 		os === 'mac'
 			? isKo
-				? 'macOS용 Studio 다운로드 (.DMG)'
-				: 'Download Studio for macOS (.DMG)'
+				? 'macOS용 Desktop 다운로드 (.DMG)'
+				: 'Download Desktop for macOS (.DMG)'
 			: os === 'windows'
 				? isKo
-					? 'Windows용 Studio 다운로드 (.EXE)'
-					: 'Download Studio for Windows (.EXE)'
+					? 'Windows용 Desktop 다운로드 (.EXE)'
+					: 'Download Desktop for Windows (.EXE)'
 				: isKo
-					? '릴리스에서 데스크톱 받기'
-					: 'Get desktop from releases';
+					? '릴리스에서 Desktop 받기'
+					: 'Get Desktop from releases';
 
-	const desktopUrl =
-		os === 'mac' ? MAC_DMG : os === 'windows' ? WIN_EXE : RELEASES;
+	const desktopUrl = os === 'mac' ? MAC_DMG : os === 'windows' ? WIN_EXE : RELEASES;
 
 	const desktopHint = isKo
 		? os === 'mac'
 			? '감지됨: macOS — DMG → Applications. “손상됨”이면: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
 			: os === 'windows'
 				? '감지됨: Windows — EXE 설치 파일을 실행하세요.'
-				: '릴리스 페이지에서 맞는 Studio 빌드를 고르세요.'
+				: '릴리스 페이지에서 맞는 Desktop 빌드를 고르세요.'
 		: os === 'mac'
 			? 'Detected macOS — open the DMG and drag into Applications. If “damaged”: xattr -cr /Applications/Copix.app && open /Applications/Copix.app'
 			: os === 'windows'
 				? 'Detected Windows — run the EXE installer from the release.'
-				: 'Pick the matching Studio build on the releases page.';
+				: 'Pick the matching Desktop build on the releases page.';
 
 	const isWindows = os === 'windows';
 	const cliLabel = isWindows
@@ -114,4 +127,4 @@ export function detectPlatform(
 	};
 }
 
-export { GITHUB, RELEASES, CLI_SH, CLI_PS, MAC_DMG, WIN_EXE };
+export { GITHUB, SITE, RELEASES, LATEST_RELEASE, CLI_SH, CLI_PS, MAC_DMG, WIN_EXE };
