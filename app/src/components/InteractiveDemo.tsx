@@ -305,7 +305,8 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		if (!el) return;
 		const question = el.querySelector('.desk-question') as HTMLElement | null;
 		if (question && phase === 'awaiting') {
-			question.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+			/* Prefer the card bottom so Skip/Continue clear the composer. */
+			question.scrollIntoView({ block: 'end', behavior: reducedMotion() ? 'auto' : 'smooth' });
 			return;
 		}
 		el.scrollTo({ top: el.scrollHeight, behavior: reducedMotion() ? 'auto' : 'smooth' });
@@ -734,9 +735,9 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 						</aside>
 					)}
 				</div>
+				{/* Inside .desk-win so overflow:hidden keeps the cue in chrome bounds. */}
+				<CliCue model={model} phase={phase} items={items} />
 			</div>
-
-			<CliCue model={model} phase={phase} items={items} />
 		</div>
 	);
 }

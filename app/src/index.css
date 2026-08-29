@@ -306,8 +306,9 @@ section[id],
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: clamp(460px, 54vw, 560px);
-	padding: 40px 30px 48px;
+	/* +~40px vs Image-2 stage so Sync question + Continue clear the chrome */
+	height: clamp(500px, 56vw, 600px);
+	padding: 36px 30px 40px;
 	overflow: visible;
 	isolation: isolate;
 }
@@ -357,7 +358,7 @@ section[id],
 .desk-win {
 	width: min(100%, 860px);
 	height: 100%;
-	max-height: 500px;
+	max-height: 540px;
 	background: #161618;
 }
 
@@ -493,6 +494,7 @@ section[id],
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
+	min-height: 0;
 	border-right: 1px solid rgba(255, 255, 255, 0.06);
 	background: #19191b;
 }
@@ -607,8 +609,8 @@ section[id],
 
 .desk-question {
 	margin-top: 2px;
-	padding: 10px;
-	border-radius: 12px;
+	padding: 8px;
+	border-radius: 10px;
 	background: #232326;
 	border: 1px solid rgba(255, 255, 255, 0.08);
 	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
@@ -619,12 +621,12 @@ section[id],
 	font-size: 10px;
 	font-weight: 700;
 	color: #a1a1aa;
-	margin-bottom: 3px;
+	margin-bottom: 2px;
 }
 
 .desk-question p {
-	margin: 0 0 8px;
-	font-size: 12.5px;
+	margin: 0 0 6px;
+	font-size: 12px;
 	font-weight: 600;
 	color: #f4f4f5;
 }
@@ -634,21 +636,21 @@ section[id],
 	margin: 0;
 	padding: 0;
 	display: grid;
-	gap: 4px;
+	gap: 3px;
 }
 
 .desk-question li button {
 	width: 100%;
 	display: flex;
-	gap: 8px;
+	gap: 7px;
 	align-items: center;
 	text-align: left;
-	padding: 6px 8px;
-	border-radius: 8px;
+	padding: 5px 7px;
+	border-radius: 7px;
 	border: 1px solid rgba(255, 255, 255, 0.08);
 	background: #1a1a1c;
 	font: inherit;
-	font-size: 11.5px;
+	font-size: 11px;
 	color: #d4d4d8;
 	cursor: pointer;
 }
@@ -660,14 +662,14 @@ section[id],
 }
 
 .desk-question li button span {
-	width: 20px;
-	height: 20px;
+	width: 18px;
+	height: 18px;
 	border-radius: 50%;
 	display: inline-grid;
 	place-items: center;
 	background: #111;
 	border: 1px solid rgba(255, 255, 255, 0.12);
-	font-size: 11px;
+	font-size: 10px;
 	font-weight: 700;
 	flex: 0 0 auto;
 }
@@ -675,8 +677,8 @@ section[id],
 .desk-question-actions {
 	display: flex;
 	justify-content: flex-end;
-	gap: 8px;
-	margin-top: 10px;
+	gap: 6px;
+	margin-top: 7px;
 }
 
 .desk-skip,
@@ -685,8 +687,8 @@ section[id],
 .desk-composer-meta button {
 	border: 0;
 	border-radius: 999px;
-	padding: 6px 12px;
-	font-size: 12px;
+	padding: 5px 11px;
+	font-size: 11.5px;
 	font-weight: 600;
 	cursor: pointer;
 	font-family: inherit;
@@ -756,6 +758,7 @@ section[id],
 
 .desk-editor {
 	min-width: 0;
+	min-height: 0;
 	display: flex;
 	flex-direction: column;
 	background: #0d1117;
@@ -949,6 +952,7 @@ section[id],
 
 .desk-side {
 	min-width: 0;
+	min-height: 0;
 	display: flex;
 	flex-direction: column;
 	background: #0d1117;
@@ -1133,12 +1137,14 @@ section[id],
 }
 
 /* —— Tiny CLI sync cue (not a second hero) —— */
+/* Anchored inside .desk-win so overflow:hidden keeps it fully in chrome bounds
+   (was a stage-level overlay that overhang the preview / code gutter). */
 .cli-cue {
 	position: absolute;
-	right: 18px;
-	bottom: 14px;
+	right: 10px;
+	bottom: 10px;
 	z-index: 4;
-	width: min(240px, 42%);
+	width: min(200px, 28%);
 	border-radius: 10px;
 	overflow: hidden;
 	background: #0a0a0b;
@@ -1611,7 +1617,7 @@ section[id],
 		width: 100%;
 		height: auto;
 		max-height: none;
-		min-height: 460px;
+		min-height: 500px;
 	}
 
 	.desk-body,
@@ -1629,9 +1635,9 @@ section[id],
 	}
 
 	.cli-cue {
-		right: 12px;
-		bottom: 10px;
-		width: min(220px, 56%);
+		right: 8px;
+		bottom: 8px;
+		width: min(180px, 40%);
 	}
 }
 
