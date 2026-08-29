@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { LocaleProvider } from './lib/LocaleContext';
 import Landing from './pages/Landing';
 
 export default function App() {
@@ -7,10 +8,12 @@ export default function App() {
 	return (
 		<BrowserRouter basename={basename}>
 			<ErrorBoundary>
-				<Routes>
-					<Route path="/" element={<Landing />} />
-					<Route path="*" element={<Navigate to="/" replace />} />
-				</Routes>
+				<LocaleProvider>
+					<Routes>
+						<Route path="/" element={<Landing />} />
+						<Route path="*" element={<Navigate to="/" replace />} />
+					</Routes>
+				</LocaleProvider>
 			</ErrorBoundary>
 		</BrowserRouter>
 	);
