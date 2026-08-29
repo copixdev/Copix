@@ -93,33 +93,35 @@ export default function Landing() {
 				{SCENES.map((chapter) => (
 					<section
 						key={chapter.id}
-						className="demo-chapter"
+						className={`demo-chapter scene-${chapter.id}`}
 						id={CHAPTER_IDS[chapter.id]}
 						aria-labelledby={`${chapter.id}-title`}
 					>
-						<div className="section-head">
-							<p className="chapter-kicker">{chapter.label}</p>
-							<h2 id={`${chapter.id}-title`}>
-								{chapter.id === 'sync'
-									? 'One session, two windows'
-									: chapter.id === 'tools'
-										? 'Tools land as real diffs'
-										: 'Flip the model, same plan'}
-							</h2>
-							<p>{chapter.blurb}</p>
+						<div className="demo-split">
+							<div className="section-head">
+								<p className="chapter-kicker">{chapter.label}</p>
+								<h2 id={`${chapter.id}-title`}>
+									{chapter.id === 'sync'
+										? 'One session under ~/Copix'
+										: chapter.id === 'tools'
+											? 'Tools land as real diffs'
+											: 'Flip the model, same plan'}
+								</h2>
+								<p>{chapter.blurb}</p>
+								{chapter.id === 'sync' ? (
+									<ul className="tool-list" aria-label="Agent tools">
+										{tools.map((name) => (
+											<li key={name}>
+												<code>{name}</code>
+											</li>
+										))}
+									</ul>
+								) : null}
+							</div>
+							<div className="stage-section">
+								<InteractiveDemo sceneId={chapter.id} />
+							</div>
 						</div>
-						<div className="stage-section">
-							<InteractiveDemo sceneId={chapter.id} />
-						</div>
-						{chapter.id === 'sync' ? (
-							<ul className="tool-list" aria-label="Agent tools">
-								{tools.map((name) => (
-									<li key={name}>
-										<code>{name}</code>
-									</li>
-								))}
-							</ul>
-						) : null}
 					</section>
 				))}
 

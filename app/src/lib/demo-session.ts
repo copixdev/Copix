@@ -29,9 +29,21 @@ export type HistoryItem = { title: string; when: string; done: boolean };
 export const MODELS = ['qwen2.5:3b', 'qwen2.5-coder:7b', 'llama3.1:8b'] as const;
 
 export const SCENES: { id: SceneId; label: string; blurb: string }[] = [
-	{ id: 'sync', label: 'Sync', blurb: 'Send a prompt in Desktop — the same turn lands in the CLI (and reverse).' },
-	{ id: 'tools', label: 'Tools', blurb: 'edit_file and terminal run once; both windows show the diff and the log.' },
-	{ id: 'models', label: 'Models', blurb: 'Flip the Ollama tag and watch a short plan → code beat.' },
+	{
+		id: 'sync',
+		label: 'Sync',
+		blurb: 'Desktop is the hero — agents, plan, and a live preview. CLI stays on the same ~/Copix session as a quiet sync cue.',
+	},
+	{
+		id: 'tools',
+		label: 'Tools',
+		blurb: 'edit_file and terminal run once; the editor shows syntax-highlighted green/red diffs under ~/Copix.',
+	},
+	{
+		id: 'models',
+		label: 'Models',
+		blurb: 'Flip the Ollama tag and watch a short plan → code beat in the same compact Desktop window.',
+	},
 ];
 
 export const SESSION_HISTORY: HistoryItem[] = [
@@ -155,10 +167,10 @@ export const MODELS_PLAN: PlanStep[] = [
 ];
 
 export function replyForChoice(choice: string) {
-	return `Got it — trigger via ${choice}. Wiring MenuBar + F3 and keeping the grid overview in MissionControlView. Same session is under ~/Copix, so the CLI already has this turn.`;
+	return `Got it — trigger via ${choice}. Wiring MenuBar + F3 and keeping the grid overview in MissionControlView. Preview and CLI are already on this ~/Copix session.`;
 }
 
 export function followUpReply(prompt: string, model: string) {
 	const clipped = prompt.length > 88 ? `${prompt.slice(0, 85)}…` : prompt;
-	return `Noted: “${clipped}”. I’ll keep working in ~/Copix with ${model} so Desktop and the CLI stay on the same session.`;
+	return `Noted: “${clipped}”. I’ll keep working in ~/Copix with ${model} so Desktop, preview, and the CLI stay on the same session.`;
 }
