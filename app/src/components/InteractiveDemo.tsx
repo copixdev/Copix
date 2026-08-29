@@ -303,6 +303,11 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 	useEffect(() => {
 		const el = deskThread.current;
 		if (!el) return;
+		const question = el.querySelector('.desk-question') as HTMLElement | null;
+		if (question && phase === 'awaiting') {
+			question.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+			return;
+		}
 		el.scrollTo({ top: el.scrollHeight, behavior: reducedMotion() ? 'auto' : 'smooth' });
 	}, [items, phase]);
 
