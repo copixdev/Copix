@@ -77,6 +77,10 @@ const en: Dict = {
 	'footer.changelog': 'Changelog',
 	'footer.copy': '© {year} Bae Juhan / copixdev · MIT · free to use · no accounts',
 
+	'demo.ctaBefore': 'To download Copix, click ',
+	'demo.ctaLink': 'here',
+	'demo.ctaAfter': '.',
+
 	'doc.title': 'Copix — A local coding agent. Pixel-precise.',
 };
 
@@ -152,6 +156,10 @@ const ko: Dict = {
 	'footer.cliDocs': 'CLI docs',
 	'footer.changelog': '변경 로그',
 	'footer.copy': '© {year} Bae Juhan / copixdev · MIT · 무료 · 계정 없음',
+
+	'demo.ctaBefore': 'Copix를 다운로드하려면 ',
+	'demo.ctaLink': '여기',
+	'demo.ctaAfter': '를 클릭하세요.',
 
 	'doc.title': 'Copix — 로컬 코딩 에이전트. 픽셀 단위로 정확합니다.',
 };

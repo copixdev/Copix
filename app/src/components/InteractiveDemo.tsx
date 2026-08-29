@@ -25,6 +25,7 @@ import {
 	type PlanStep,
 	type SceneId,
 } from '../lib/demo-session';
+import { useLocale } from '../lib/LocaleContext';
 import { tokenizeLine, tokenizeMarkdown } from '../lib/syntax';
 
 type Phase = 'playing' | 'awaiting' | 'done';
@@ -261,6 +262,7 @@ type DemoProps = {
 };
 
 export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
+	const { t } = useLocale();
 	const [runId, setRunId] = useState(0);
 	const [armed, setArmed] = useState(false);
 	const [items, setItems] = useState<ChatItem[]>([]);
@@ -505,14 +507,7 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		setItems((prev) => [
 			...prev,
 			{ id: uid(), kind: 'user', text: trimmed },
-			{
-				id: uid(),
-				kind: 'cta',
-				before: 'To download Copix, click ',
-				link: 'here',
-				after: '.',
-				href: '#install',
-			},
+			{ id: uid(), kind: 'cta', href: '#install' },
 		]);
 	}
 
@@ -657,11 +652,11 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 										<div key={item.id} className="desk-bubble agent desk-cta">
 											<span className="desk-tag">Copix</span>
 											<p>
-												{item.before}
+												{t('demo.ctaBefore')}
 												<a className="desk-cta-link" href={item.href}>
-													{item.link}
+													{t('demo.ctaLink')}
 												</a>
-												{item.after}
+												{t('demo.ctaAfter')}
 											</p>
 										</div>
 									);

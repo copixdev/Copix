@@ -7,7 +7,7 @@ export type ChatItem =
 	| { id: string; kind: 'file'; name: string; delta: string }
 	| { id: string; kind: 'question'; prompt: string; options: string[]; selected: number | null }
 	| { id: string; kind: 'term'; command: string; output: string }
-	| { id: string; kind: 'cta'; before: string; link: string; after: string; href: string };
+	| { id: string; kind: 'cta'; href: string };
 
 export type DiffMark = 'add' | 'del' | null;
 
