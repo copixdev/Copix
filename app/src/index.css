@@ -16,7 +16,8 @@
 	--product: #0c0c0e;
 	--shadow: 0 28px 80px rgba(10, 10, 10, 0.16);
 	--ease: cubic-bezier(0.22, 1, 0.36, 1);
-	--nav-h: 60px;
+	--nav-h: 64px;
+	--nav-inset: 14px;
 	--max: 1080px;
 	--stage-max: 1180px;
 	--space: 8px;
@@ -79,46 +80,58 @@ section[id],
 #install-cli,
 #watch,
 #demo,
+#demo-sync,
 #demo-tools,
 #demo-models {
-	scroll-margin-top: calc(var(--nav-h) + 12px);
+	scroll-margin-top: calc(var(--nav-h) + var(--nav-inset) + 12px);
 }
 
-/* —— Nav —— */
-.nav {
+/* —— Floating capsule nav —— */
+.nav-shell {
 	position: sticky;
 	top: 0;
 	z-index: 40;
+	padding: var(--nav-inset) max(12px, calc((100% - 980px) / 2)) 0;
+	pointer-events: none;
+}
+
+.nav {
+	pointer-events: auto;
 	min-height: var(--nav-h);
 	display: flex;
 	align-items: center;
-	gap: calc(var(--space) * 2);
-	padding: 0 calc(var(--space) * 3);
-	max-width: var(--stage-max);
+	gap: calc(var(--space) * 1.5);
+	padding: 8px 10px 8px 16px;
+	max-width: 920px;
 	margin: 0 auto;
-	backdrop-filter: blur(14px);
-	background: rgba(255, 255, 255, 0.86);
-	border-bottom: 1px solid var(--line);
+	border-radius: 999px;
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
+	background: rgba(255, 255, 255, 0.92);
+	border: 1px solid rgba(10, 10, 10, 0.08);
+	box-shadow:
+		0 10px 36px rgba(10, 10, 10, 0.1),
+		0 1px 2px rgba(10, 10, 10, 0.04);
 }
 
 .nav-brand {
 	display: inline-flex;
 	align-items: center;
-	gap: 10px;
+	gap: 9px;
 	font-weight: 800;
 	letter-spacing: -0.03em;
-	font-size: 1.05rem;
+	font-size: 1.02rem;
 	flex: 0 0 auto;
 }
 
 .nav-brand img {
-	border-radius: 7px;
+	border-radius: 8px;
 }
 
 .nav-links {
 	display: flex;
-	gap: calc(var(--space) * 2.5);
-	margin-left: calc(var(--space) * 2);
+	gap: calc(var(--space) * 2.25);
+	margin-left: calc(var(--space) * 1.5);
 	color: var(--ink-2);
 	font-size: 14px;
 	font-weight: 500;
@@ -131,8 +144,27 @@ section[id],
 .nav-actions {
 	margin-left: auto;
 	display: flex;
+	align-items: center;
 	gap: 8px;
 	flex: 0 0 auto;
+}
+
+.nav-lang select {
+	appearance: none;
+	font: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--ink-2);
+	background: transparent;
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+.nav-lang select:hover {
+	color: var(--ink);
+	background: var(--accent-soft);
 }
 
 /* —— Buttons —— */
@@ -185,7 +217,7 @@ section[id],
 .hero {
 	max-width: var(--max);
 	margin: 0 auto;
-	padding: calc(var(--space) * 7) calc(var(--space) * 3) calc(var(--space) * 3);
+	padding: calc(var(--space) * 5) calc(var(--space) * 3) calc(var(--space) * 3);
 	text-align: center;
 }
 
@@ -237,11 +269,48 @@ section[id],
 	color: var(--ink-3);
 }
 
+/* —— Hero Sync demo (contained Image-2 scale, not full-bleed) —— */
+.hero-demo {
+	padding: calc(var(--space) * 2) max(18px, calc((100% - var(--stage-max)) / 2))
+		calc(var(--space) * 6);
+	background: var(--field);
+	color: var(--field-ink);
+}
+
+.hero-demo-stage {
+	max-width: var(--stage-max);
+	margin: 0 auto;
+}
+
+.hero-demo .mac-stage {
+	padding-top: 28px;
+}
+
 /* —— Demo chapters (Image-2 contained product scale) —— */
 .demo-chapter {
 	padding: calc(var(--space) * 7) max(18px, calc((100% - var(--stage-max)) / 2));
 	background: var(--field);
 	color: var(--field-ink);
+}
+
+.demo-chapter.scene-sync {
+	border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chapter-note {
+	margin-top: 10px !important;
+	font-size: 13px;
+	opacity: 0.85;
+}
+
+.mac-stage.static-mock {
+	pointer-events: none;
+}
+
+.mac-stage.static-mock .desk-input input,
+.mac-stage.static-mock .desk-composer-meta select,
+.mac-stage.static-mock button {
+	cursor: default;
 }
 
 .demo-split {
@@ -605,6 +674,17 @@ section[id],
 
 .desk-bubble.agent .desk-tag {
 	color: #93c5fd;
+}
+
+.desk-cta .desk-cta-link {
+	color: #93c5fd;
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.desk-cta .desk-cta-link:hover {
+	color: #bfdbfe;
 }
 
 .desk-question {
@@ -1646,13 +1726,27 @@ section[id],
 		display: none;
 	}
 
+	.nav-shell {
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+
 	.nav {
-		padding: 0 14px;
-		gap: 10px;
+		padding: 8px 8px 8px 12px;
+		gap: 8px;
+	}
+
+	.nav-lang {
+		display: none;
 	}
 
 	.hero {
 		padding: 40px 18px 16px;
+	}
+
+	.hero-demo {
+		padding-left: 18px;
+		padding-right: 18px;
 	}
 
 	.demo-chapter {

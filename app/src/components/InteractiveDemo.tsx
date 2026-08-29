@@ -19,13 +19,13 @@ import {
 	MODELS_PLAN,
 	VIEW_FILE_AFTER,
 	VIEW_FILE_BEFORE,
-	followUpReply,
 	replyForChoice,
 	type ChatItem,
 	type EditorFile,
 	type PlanStep,
 	type SceneId,
 } from '../lib/demo-session';
+import { useLocale } from '../lib/LocaleContext';
 import { tokenizeLine, tokenizeMarkdown } from '../lib/syntax';
 
 type Phase = 'playing' | 'awaiting' | 'done';
@@ -262,6 +262,7 @@ type DemoProps = {
 };
 
 export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
+	const { t } = useLocale();
 	const [runId, setRunId] = useState(0);
 	const [armed, setArmed] = useState(false);
 	const [items, setItems] = useState<ChatItem[]>([]);
@@ -278,8 +279,6 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 	const abortRef = useRef<AbortController | null>(null);
 	const phaseRef = useRef<Phase>('playing');
 	const modelRef = useRef(model);
-	const followUpLock = useRef(false);
-	const followUpQueue = useRef<string[]>([]);
 
 	phaseRef.current = phase;
 	modelRef.current = model;
@@ -331,8 +330,6 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		const ac = new AbortController();
 		abortRef.current = ac;
 		const { signal } = ac;
-		followUpLock.current = false;
-		followUpQueue.current = [];
 
 		async function markStatus(text: string) {
 			const id = uid();
@@ -502,40 +499,21 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		}
 	}
 
-	async function sendFollowUp(text: string) {
+	/** User composer input: do not continue the fake agent — point to Install. */
+	function sendFollowUp(text: string) {
 		const trimmed = text.trim();
 		if (!trimmed) return;
 		setDesktopInput('');
-		if (followUpLock.current) {
-			followUpQueue.current.push(trimmed);
-			return;
-		}
-		const signal = abortRef.current?.signal;
-		if (!signal || signal.aborted) return;
-		followUpLock.current = true;
-		setItems((prev) => [...prev, { id: uid(), kind: 'user', text: trimmed }]);
-		setPhase('playing');
-		phaseRef.current = 'playing';
-		try {
-			const st = uid();
-			setItems((prev) => [...prev, { id: st, kind: 'status', text: 'Thinking', done: false }]);
-			await delay(reducedMotion() ? 0 : 380, signal);
-			setItems((prev) => prev.map((row) => (row.id === st ? { ...row, done: true } : row)));
-			await typeAgent(setItems, followUpReply(trimmed, modelRef.current), signal);
-			setPhase('done');
-			phaseRef.current = 'done';
-		} catch {
-			/* aborted */
-		} finally {
-			followUpLock.current = false;
-			const next = followUpQueue.current.shift();
-			if (next) void sendFollowUp(next);
-		}
+		setItems((prev) => [
+			...prev,
+			{ id: uid(), kind: 'user', text: trimmed },
+			{ id: uid(), kind: 'cta', href: '#install' },
+		]);
 	}
 
 	function onDesktopSubmit(e: FormEvent) {
 		e.preventDefault();
-		void sendFollowUp(desktopInput);
+		sendFollowUp(desktopInput);
 	}
 
 	function onModelChange(next: string) {
@@ -666,6 +644,20 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 													</button>
 												</div>
 											) : null}
+										</div>
+									);
+								}
+								if (item.kind === 'cta') {
+									return (
+										<div key={item.id} className="desk-bubble agent desk-cta">
+											<span className="desk-tag">Copix</span>
+											<p>
+												{t('demo.ctaBefore')}
+												<a className="desk-cta-link" href={item.href}>
+													{t('demo.ctaLink')}
+												</a>
+												{t('demo.ctaAfter')}
+											</p>
 										</div>
 									);
 								}
