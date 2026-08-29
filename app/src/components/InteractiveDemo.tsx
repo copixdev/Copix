@@ -1,6 +1,5 @@
 import {
 	FormEvent,
-	PointerEvent as ReactPointerEvent,
 	useCallback,
 	useEffect,
 	useRef,
@@ -30,9 +29,7 @@ import {
 import { tokenizeLine, tokenizeMarkdown } from '../lib/syntax';
 
 type Phase = 'playing' | 'awaiting' | 'done';
-type WinId = 'desktop' | 'cli';
 
-const ICON = `${import.meta.env.BASE_URL}icon.png`;
 const WALLPAPER = `${import.meta.env.BASE_URL}wallpaper.jpg`;
 
 function delay(ms: number, signal: AbortSignal) {
@@ -86,30 +83,9 @@ async function typeAgent(
 	setItems((prev) => prev.map((row) => (row.id === id ? { ...row, text: full, streaming: false } : row)));
 }
 
-function WindowChrome({
-	title,
-	meta,
-	onPointerDown,
-	onPointerMove,
-	onPointerUp,
-	onFocus,
-}: {
-	title: string;
-	meta?: string;
-	onPointerDown: (e: ReactPointerEvent<HTMLDivElement>) => void;
-	onPointerMove: (e: ReactPointerEvent<HTMLDivElement>) => void;
-	onPointerUp: () => void;
-	onFocus: () => void;
-}) {
+function WindowChrome({ title, meta }: { title: string; meta?: string }) {
 	return (
-		<div
-			className="mac-titlebar"
-			onPointerDown={onPointerDown}
-			onPointerMove={onPointerMove}
-			onPointerUp={onPointerUp}
-			onPointerCancel={onPointerUp}
-			onMouseDown={onFocus}
-		>
+		<div className="mac-titlebar">
 			<div className="mac-lights" aria-hidden>
 				<span />
 				<span />
@@ -153,6 +129,132 @@ function CodePane({ file, reveal }: { file: EditorFile; reveal: number }) {
 	);
 }
 
+function PreviewPane({ phase }: { phase: Phase }) {
+	const built = phase === 'done';
+	return (
+		<aside className="desk-preview" aria-label="Browser preview">
+			<div className="preview-chrome">
+				<div className="preview-nav" aria-hidden>
+					<span />
+					<span />
+					<span />
+				</div>
+				<div className="preview-url">
+					<span className="preview-lock" aria-hidden />
+					<span className="preview-url-text">localhost:5173/mission-control</span>
+				</div>
+				<span className="preview-pill">{built ? 'Live' : 'Building'}</span>
+			</div>
+			<div className={`preview-page ${built ? 'built' : 'draft'}`}>
+				<header className="preview-mc-bar">
+					<strong>Mission Control</strong>
+					<em>F3 · Window menu</em>
+				</header>
+				<div className="preview-mc-grid">
+					{(built
+						? [
+								{ title: 'Copix Desktop', meta: 'Plan · active' },
+								{ title: 'feature-prd.md', meta: 'Markdown' },
+								{ title: 'Terminal', meta: '~/Copix' },
+								{ title: 'Preview', meta: 'localhost:5173' },
+							]
+						: [
+								{ title: 'App shell', meta: 'stub' },
+								{ title: 'Window A', meta: 'draft' },
+								{ title: 'Window B', meta: 'draft' },
+								{ title: 'Overlay', meta: 'todo' },
+							]
+					).map((card) => (
+						<article key={card.title} className="preview-mc-card">
+							<div className="preview-mc-card-top">
+								<span />
+								<span />
+								<span />
+							</div>
+							<strong>{card.title}</strong>
+							<em>{card.meta}</em>
+						</article>
+					))}
+				</div>
+				{built ? (
+					<p className="preview-mc-foot">Grid overview · MenuBar + F3 wired</p>
+				) : (
+					<p className="preview-mc-foot">Drafting expose grid… answer the question to continue</p>
+				)}
+			</div>
+		</aside>
+	);
+}
+
+function PlanStrip({ plan }: { plan: PlanStep[] }) {
+	return (
+		<div className="desk-plan">
+			<div className="desk-plan-head">{plan.length} Tasks</div>
+			<ul>
+				{plan.map((step) => (
+					<li key={step.text} className={step.status}>
+						<span />
+						{step.text}
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+}
+
+function CliCue({
+	model,
+	phase,
+	items,
+}: {
+	model: string;
+	phase: Phase;
+	items: ChatItem[];
+}) {
+	const lastUser = [...items].reverse().find((i) => i.kind === 'user');
+	const lastStatus = [...items].reverse().find((i) => i.kind === 'status');
+	const line =
+		phase === 'awaiting'
+			? 'waiting on Desktop choice…'
+			: lastStatus
+				? `${lastStatus.done ? '✓' : '●'} ${lastStatus.text}`
+				: phase === 'done'
+					? '✓ Desktop + CLI on ~/Copix'
+					: 'session syncing…';
+	const prompt = lastUser?.text
+		? lastUser.text.length > 36
+			? `${lastUser.text.slice(0, 34)}…`
+			: lastUser.text
+		: 'copix';
+
+	return (
+		<div className="cli-cue" aria-label="Copix CLI sync cue">
+			<div className="cli-cue-bar">
+				<span className="cli-cue-lights" aria-hidden>
+					<span />
+					<span />
+					<span />
+				</span>
+				<strong>Copix CLI</strong>
+				<em>~/Copix</em>
+			</div>
+			<div className="cli-cue-body">
+				<p>
+					<span className="cli-host">copix</span> <span className="cli-path">~/Copix</span>{' '}
+					<span className="cli-pct">%</span> copix
+				</p>
+				<p className="cli-cue-meta">
+					{model} · {phase === 'done' ? 'synced' : 'live'}
+				</p>
+				<p className="cli-cue-line">
+					<span className="cli-you">you</span> {prompt}
+				</p>
+				<p className="cli-cue-line dim">{line}</p>
+			</div>
+		</div>
+	);
+}
+
 type DemoProps = {
 	sceneId: SceneId;
 	/** Optional DOM id for the stage (first chapter uses `demo`). */
@@ -169,20 +271,13 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 	const [model, setModel] = useState<string>(MODELS[0]);
 	const [phase, setPhase] = useState<Phase>('playing');
 	const [desktopInput, setDesktopInput] = useState('');
-	const [cliInput, setCliInput] = useState('');
 	const [reveal, setReveal] = useState(99);
-	const [focus, setFocus] = useState<WinId>('desktop');
-	const [deskOffset, setDeskOffset] = useState({ x: 0, y: 0 });
-	const [cliOffset, setCliOffset] = useState({ x: 0, y: 0 });
-	const [now, setNow] = useState('Fri  2:14 PM');
 
 	const stageRef = useRef<HTMLDivElement>(null);
 	const deskThread = useRef<HTMLDivElement>(null);
-	const cliThread = useRef<HTMLDivElement>(null);
 	const abortRef = useRef<AbortController | null>(null);
 	const phaseRef = useRef<Phase>('playing');
 	const modelRef = useRef(model);
-	const dragRef = useRef<{ win: WinId; dx: number; dy: number } | null>(null);
 	const followUpLock = useRef(false);
 	const followUpQueue = useRef<string[]>([]);
 
@@ -190,18 +285,7 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 	modelRef.current = model;
 	const currentFile = files.find((f) => f.name === activeFile) ?? files[0];
 	const scene = SCENES.find((s) => s.id === sceneId)!;
-
-	useEffect(() => {
-		const tick = () => {
-			const d = new Date();
-			const wk = d.toLocaleDateString('en-US', { weekday: 'short' });
-			const tm = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-			setNow(`${wk}  ${tm}`);
-		};
-		tick();
-		const id = window.setInterval(tick, 30_000);
-		return () => window.clearInterval(id);
-	}, []);
+	const showPreview = sceneId === 'sync';
 
 	useEffect(() => {
 		const el = stageRef.current;
@@ -217,10 +301,14 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 	}, []);
 
 	useEffect(() => {
-		for (const el of [deskThread.current, cliThread.current]) {
-			if (!el) continue;
-			el.scrollTo({ top: el.scrollHeight, behavior: reducedMotion() ? 'auto' : 'smooth' });
+		const el = deskThread.current;
+		if (!el) return;
+		const question = el.querySelector('.desk-question') as HTMLElement | null;
+		if (question && phase === 'awaiting') {
+			question.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+			return;
 		}
+		el.scrollTo({ top: el.scrollHeight, behavior: reducedMotion() ? 'auto' : 'smooth' });
 	}, [items, phase]);
 
 	const animateReveal = useCallback(async (file: EditorFile, signal: AbortSignal) => {
@@ -255,10 +343,8 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		async function play() {
 			setItems([]);
 			setDesktopInput('');
-			setCliInput('');
 			setPhase('playing');
 			phaseRef.current = 'playing';
-			setFocus('desktop');
 			if (sceneId === 'sync') {
 				setFiles([PRD_FILE, VIEW_FILE_BEFORE]);
 				setActiveFile(PRD_FILE.name);
@@ -314,12 +400,12 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 				setFiles([VIEW_FILE_AFTER, APP_FILE]);
 				setActiveFile(VIEW_FILE_AFTER.name);
 				await animateReveal(VIEW_FILE_AFTER, signal);
-			setPlan(
-				TOOLS_PLAN.map((step, i) => ({
-					...step,
-					status: i < 2 ? 'done' : 'current',
-				})),
-			);
+				setPlan(
+					TOOLS_PLAN.map((step, i) => ({
+						...step,
+						status: i < 2 ? 'done' : 'current',
+					})),
+				);
 				await markStatus('terminal · npx tsc --noEmit');
 				setItems((prev) => [
 					...prev,
@@ -334,7 +420,7 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 				setPlan(TOOLS_PLAN.map((step) => ({ ...step, status: 'done' })));
 				await typeAgent(
 					setItems,
-					'Wired F3 + Window › Mission Control. Typecheck is clean. Desktop and CLI are looking at the same diff under ~/Copix.',
+					'Wired F3 + Window › Mission Control. Typecheck is clean. Desktop and CLI share the same diff under ~/Copix.',
 					signal,
 				);
 				setPhase('done');
@@ -371,7 +457,7 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 			setPlan(MODELS_PLAN.map((step) => ({ ...step, status: 'done' })));
 			await typeAgent(
 				setItems,
-				`${modelRef.current} finished the view. Flip the tag anytime — both windows stay on this ~/Copix session.`,
+				`${modelRef.current} finished the view. Flip the tag anytime — Desktop stays on this ~/Copix session.`,
 				signal,
 			);
 			setPhase('done');
@@ -407,7 +493,6 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 			]);
 			setFiles([PRD_FILE, VIEW_FILE_AFTER]);
 			setActiveFile(VIEW_FILE_AFTER.name);
-			await animateReveal(VIEW_FILE_AFTER, signal);
 			setPlan(SYNC_PLAN.map((step) => ({ ...step, status: 'done' })));
 			setPhase('done');
 			phaseRef.current = 'done';
@@ -420,7 +505,6 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		const trimmed = text.trim();
 		if (!trimmed) return;
 		setDesktopInput('');
-		setCliInput('');
 		if (followUpLock.current) {
 			followUpQueue.current.push(trimmed);
 			return;
@@ -453,43 +537,10 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		void sendFollowUp(desktopInput);
 	}
 
-	function onCliSubmit(e: FormEvent) {
-		e.preventDefault();
-		const raw = cliInput.trim();
-		if (phase === 'awaiting' && /^[123]$/.test(raw)) {
-			setCliInput('');
-			void completeQuestion(Number(raw) - 1);
-			return;
-		}
-		void sendFollowUp(cliInput);
-	}
-
 	function onModelChange(next: string) {
 		setModel(next);
 		modelRef.current = next;
 		if (sceneId === 'models') setRunId((n) => n + 1);
-	}
-
-	function beginDrag(win: WinId, e: ReactPointerEvent<HTMLDivElement>) {
-		if (window.matchMedia('(max-width: 900px)').matches) return;
-		if ((e.target as HTMLElement).closest('select, button, input, a')) return;
-		e.preventDefault();
-		setFocus(win);
-		const offset = win === 'desktop' ? deskOffset : cliOffset;
-		dragRef.current = { win, dx: e.clientX - offset.x, dy: e.clientY - offset.y };
-		e.currentTarget.setPointerCapture(e.pointerId);
-	}
-
-	function onDragMove(e: ReactPointerEvent<HTMLDivElement>) {
-		const drag = dragRef.current;
-		if (!drag) return;
-		const next = { x: e.clientX - drag.dx, y: e.clientY - drag.dy };
-		if (drag.win === 'desktop') setDeskOffset(next);
-		else setCliOffset(next);
-	}
-
-	function endDrag() {
-		dragRef.current = null;
 	}
 
 	function openFile(name: string) {
@@ -497,50 +548,25 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 		if (found) {
 			setActiveFile(found.name);
 			setReveal(found.lines.length);
-			setFocus('desktop');
 		}
 	}
 
 	return (
 		<div
-			className="mac-stage"
+			className={`mac-stage scene-${sceneId}`}
 			id={stageId}
 			ref={stageRef}
-			style={{ backgroundImage: `url(${WALLPAPER})` }}
 			aria-label={`Copix ${scene.label} demo`}
 		>
-			<div className="mac-menubar">
-				<div className="mac-menubar-left">
-					<span className="mac-apple" aria-hidden>
-						●
-					</span>
-					<strong>Copix</strong>
-					<span>File</span>
-					<span>Edit</span>
-					<span>View</span>
-					<span>Window</span>
-				</div>
-				<div className="mac-menubar-right">
-					<span className="mac-pill">~/Copix</span>
-					<span className="mac-pill">{scene.label}</span>
-					<span>{now}</span>
-				</div>
-			</div>
-
 			<div
-				className={`mac-win desk-win ${focus === 'desktop' ? 'focused' : ''}`}
-				style={{ transform: `translate(${deskOffset.x}px, ${deskOffset.y}px)` }}
-				onPointerDown={() => setFocus('desktop')}
-			>
-				<WindowChrome
-					title="Copix Desktop"
-					meta={`${model} · Plan`}
-					onPointerDown={(e) => beginDrag('desktop', e)}
-					onPointerMove={onDragMove}
-					onPointerUp={endDrag}
-					onFocus={() => setFocus('desktop')}
-				/>
-				<div className="desk-body">
+				className="mac-stage-ambient"
+				style={{ backgroundImage: `url(${WALLPAPER})` }}
+				aria-hidden
+			/>
+
+			<div className="mac-win desk-win focused">
+				<WindowChrome title="Copix Desktop" meta={`${model} · Plan`} />
+				<div className={`desk-body ${showPreview ? 'with-preview' : 'with-editor'}`}>
 					<aside className="desk-rail">
 						<div className="desk-rail-label">Agents</div>
 						<ul>
@@ -680,150 +706,37 @@ export function InteractiveDemo({ sceneId, stageId }: DemoProps) {
 						</div>
 					</section>
 
-					<aside className="desk-editor">
-						<div className="desk-tabs">
-							{files.map((f) => (
-								<button
-									key={f.name}
-									type="button"
-									className={currentFile.name === f.name ? 'active' : ''}
-									onClick={() => openFile(f.name)}
-								>
-									{f.name}
-								</button>
-							))}
+					{showPreview ? (
+						<div className="desk-side">
+							<PreviewPane phase={phase} />
+							<PlanStrip plan={plan} />
 						</div>
-						<div className="desk-editor-bar">
-							<span>{currentFile.path}</span>
-							<span className="desk-lang">{currentFile.language}</span>
-						</div>
-						<CodePane file={currentFile} reveal={reveal} />
-						<div className="desk-plan">
-							<div className="desk-plan-head">{plan.length} Tasks</div>
-							<ul>
-								{plan.map((step) => (
-									<li key={step.text} className={step.status}>
-										<span />
-										{step.text}
-									</li>
-								))}
-							</ul>
-						</div>
-					</aside>
-				</div>
-			</div>
-
-			<div
-				className={`mac-win cli-win ${focus === 'cli' ? 'focused' : ''}`}
-				style={{ transform: `translate(${cliOffset.x}px, ${cliOffset.y}px)` }}
-				onPointerDown={() => setFocus('cli')}
-			>
-				<WindowChrome
-					title="Copix CLI"
-					meta="zsh · ~/Copix"
-					onPointerDown={(e) => beginDrag('cli', e)}
-					onPointerMove={onDragMove}
-					onPointerUp={endDrag}
-					onFocus={() => setFocus('cli')}
-				/>
-				<div className="cli-body">
-					<div className="cli-thread" ref={cliThread} aria-label="Copix CLI session">
-						<p className="cli-login">Last login: {now} on ttys002</p>
-						<p className="cli-line">
-							<span className="cli-host">copix@desktop</span> <span className="cli-path">~/Copix</span>{' '}
-							<span className="cli-pct">%</span> copix
-						</p>
-						<p className="cli-meta">
-							session Mission Control Plan · {model} · Plan
-						</p>
-						{items.map((item) => {
-							if (item.kind === 'user') {
-								return (
-									<p key={item.id} className="cli-line">
-										<span className="cli-you">you</span> {item.text}
-									</p>
-								);
-							}
-							if (item.kind === 'status') {
-								return (
-									<p key={item.id} className={`cli-line cli-status ${item.done ? 'done' : ''}`}>
-										<span className="cli-bullet">{item.done ? '✓' : '●'}</span> {item.text}
-									</p>
-								);
-							}
-							if (item.kind === 'file') {
-								return (
+					) : (
+						<aside className="desk-editor">
+							<div className="desk-tabs">
+								{files.map((f) => (
 									<button
-										key={item.id}
+										key={f.name}
 										type="button"
-										className="cli-file"
-										onClick={() => openFile(item.name)}
+										className={currentFile.name === f.name ? 'active' : ''}
+										onClick={() => openFile(f.name)}
 									>
-										<span className="cli-bullet">✎</span> edit_file {item.name}{' '}
-										<span className="cli-delta">{item.delta}</span>
+										{f.name}
 									</button>
-								);
-							}
-							if (item.kind === 'term') {
-								return (
-									<div key={item.id} className="cli-cmd">
-										<p>
-											<span className="cli-bullet">$</span> {item.command}
-										</p>
-										<p className="cli-out">{item.output}</p>
-									</div>
-								);
-							}
-							if (item.kind === 'question') {
-								return (
-									<div key={item.id} className="cli-q">
-										<p>
-											<span className="cli-you">?</span> {item.prompt}
-										</p>
-										{item.options.map((opt, oi) => (
-											<p key={opt} className={item.selected === oi ? 'picked' : ''}>
-												{'  '}
-												{oi + 1}. {opt}
-											</p>
-										))}
-										{phase === 'awaiting' ? (
-											<p className="cli-hint">reply 1–3 or type a follow-up</p>
-										) : null}
-									</div>
-								);
-							}
-							return (
-								<p key={item.id} className="cli-agent">
-									<span className="cli-bot">copix</span> {item.text}
-									{item.streaming ? <span className="cli-block-caret" /> : null}
-								</p>
-							);
-						})}
-					</div>
-					<form className="cli-input" onSubmit={onCliSubmit}>
-						<span className="cli-prompt">copix ›</span>
-						<input
-							value={cliInput}
-							onChange={(e) => setCliInput(e.target.value)}
-							aria-label="Copix CLI prompt"
-							spellCheck={false}
-						/>
-					</form>
+								))}
+							</div>
+							<div className="desk-editor-bar">
+								<span>{currentFile.path}</span>
+								<span className="desk-lang">{currentFile.language}</span>
+							</div>
+							<CodePane file={currentFile} reveal={reveal} />
+							<PlanStrip plan={plan} />
+						</aside>
+					)}
 				</div>
 			</div>
 
-			<nav className="mac-dock" aria-label="Desktop dock">
-				<button type="button" className={focus === 'desktop' ? 'on' : ''} onClick={() => setFocus('desktop')}>
-					<img src={ICON} alt="" width={36} height={36} />
-					<span>Desktop</span>
-				</button>
-				<button type="button" className={focus === 'cli' ? 'on' : ''} onClick={() => setFocus('cli')}>
-					<span className="dock-term" aria-hidden>
-						❯_
-					</span>
-					<span>CLI</span>
-				</button>
-			</nav>
+			<CliCue model={model} phase={phase} items={items} />
 		</div>
 	);
 }
