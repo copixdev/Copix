@@ -6,7 +6,8 @@ export type ChatItem =
 	| { id: string; kind: 'status'; text: string; done?: boolean }
 	| { id: string; kind: 'file'; name: string; delta: string }
 	| { id: string; kind: 'question'; prompt: string; options: string[]; selected: number | null }
-	| { id: string; kind: 'term'; command: string; output: string };
+	| { id: string; kind: 'term'; command: string; output: string }
+	| { id: string; kind: 'cta'; before: string; link: string; after: string; href: string };
 
 export type DiffMark = 'add' | 'del' | null;
 
@@ -168,9 +169,4 @@ export const MODELS_PLAN: PlanStep[] = [
 
 export function replyForChoice(choice: string) {
 	return `Got it — trigger via ${choice}. Wiring MenuBar + F3 and keeping the grid overview in MissionControlView. Preview and CLI are already on this ~/Copix session.`;
-}
-
-export function followUpReply(prompt: string, model: string) {
-	const clipped = prompt.length > 88 ? `${prompt.slice(0, 85)}…` : prompt;
-	return `Noted: “${clipped}”. I’ll keep working in ~/Copix with ${model} so Desktop, preview, and the CLI stay on the same session.`;
 }

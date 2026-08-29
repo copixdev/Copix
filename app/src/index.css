@@ -676,6 +676,17 @@ section[id],
 	color: #93c5fd;
 }
 
+.desk-cta .desk-cta-link {
+	color: #93c5fd;
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.desk-cta .desk-cta-link:hover {
+	color: #bfdbfe;
+}
+
 .desk-question {
 	margin-top: 2px;
 	padding: 8px;
