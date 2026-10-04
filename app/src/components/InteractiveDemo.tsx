@@ -129,16 +129,25 @@ export function InteractiveDemo({ sceneId }: DemoProps) {
 	}, []);
 
 	useEffect(() => {
-		const el = deskThread.current;
-		if (!el) return;
-		const question = el.querySelector('.desk-question') as HTMLElement | null;
-		const behavior = reducedMotion() ? 'auto' : 'smooth';
-		if (question && phase === 'awaiting') {
-			const top = Math.max(0, question.offsetTop - 6);
-			el.scrollTo({ top, behavior });
-			return;
+		function snap() {
+			const thread = deskThread.current;
+			if (!thread) return;
+			const question = thread.querySelector('.desk-question') as HTMLElement | null;
+			if (question && phaseRef.current === 'awaiting') {
+				const action = question.querySelector('.desk-question-actions') as HTMLElement | null;
+				const target = action ?? question;
+				const delta = target.getBoundingClientRect().bottom - thread.getBoundingClientRect().bottom;
+				thread.scrollTop += delta + 8;
+				return;
+			}
+			thread.scrollTop = thread.scrollHeight;
 		}
-		el.scrollTo({ top: el.scrollHeight, behavior });
+		snap();
+		const node = deskThread.current;
+		if (!node) return;
+		const ro = new ResizeObserver(snap);
+		ro.observe(node);
+		return () => ro.disconnect();
 	}, [items, phase]);
 
 	useEffect(() => {

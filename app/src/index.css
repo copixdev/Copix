@@ -340,8 +340,8 @@ section[id],
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	width: 64%;
-	height: 70%;
+	width: 68%;
+	height: 72%;
 	transform: translate(-50%, -50%);
 	display: flex;
 	flex-direction: column;
@@ -390,6 +390,7 @@ section[id],
 	flex-direction: column;
 	gap: 6px;
 	padding-right: 2px;
+	padding-bottom: 4px;
 	scrollbar-width: thin;
 	scrollbar-color: rgba(26, 23, 20, 0.25) transparent;
 }
@@ -461,7 +462,7 @@ section[id],
 
 .desk-bubble p {
 	margin: 2px 0 0;
-	font-size: 12px;
+	font-size: 13px;
 	line-height: 1.4;
 	color: var(--ink);
 }
@@ -565,11 +566,16 @@ section[id],
 }
 
 .desk-question-actions {
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
 	display: flex;
 	justify-content: flex-end;
 	flex-wrap: wrap;
 	gap: 6px;
 	margin-top: 8px;
+	padding-top: 6px;
+	background: var(--card-solid);
 }
 
 .desk-skip,
@@ -1404,10 +1410,17 @@ section[id],
 	}
 }
 
+@container (max-width: 420px) {
+	.lens-preview-line,
+	.lens-plan {
+		display: none;
+	}
+}
+
 @container (max-width: 360px) {
 	.lens-safe {
 		width: 66%;
-		height: 72%;
+		height: 70%;
 	}
 
 	.pill,
