@@ -173,6 +173,17 @@ section[id],
 	font-size: 1.02rem;
 }
 
+.nav-logo {
+	width: 28px;
+	height: 28px;
+	flex: 0 0 auto;
+	display: block;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+}
+
 .nav-links {
 	display: flex;
 	flex-wrap: wrap;
