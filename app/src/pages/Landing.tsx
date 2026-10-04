@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ModelsStill, ToolsStill } from '../components/ChapterStills';
 import { InteractiveDemo } from '../components/InteractiveDemo';
 import { SiteNav } from '../components/SiteNav';
 import { SyncStaticMock } from '../components/SyncStaticMock';
@@ -66,35 +67,42 @@ export default function Landing() {
 			<SiteNav />
 			<main>
 				<section className="hero">
-					<p className="hero-kicker">{t('hero.kicker')}</p>
-					<h1 className="hero-title">{t('hero.title')}</h1>
-					<p className="hero-sub">
-						{t('hero.subBefore')} <code>~/Copix</code> {t('hero.subAfter')}
-					</p>
-					<div className="hero-cta">
-						<a className="btn primary lg" href="#install">
-							{t('hero.getDesktop')}
-						</a>
-						<a className="btn ghost lg" href="#install-cli">
-							{t('hero.installCli')}
-						</a>
-						<a className="btn ghost lg" href="#watch">
-							{t('hero.watch')}
-						</a>
+					<div className="hero-copy">
+						<p className="hero-kicker">{t('hero.kicker')}</p>
+						<h1 className="hero-title">{t('hero.title')}</h1>
+						<p className="hero-sub">
+							{t('hero.subBefore')} <code>~/Copix</code> {t('hero.subAfter')}
+						</p>
+						<div className="hero-cta">
+							<a className="btn primary lg" href="#install">
+								{t('hero.getDesktop')}
+							</a>
+							<a className="btn ghost lg" href="#install-cli">
+								{t('hero.installCli')}
+							</a>
+							<a className="btn ghost lg" href="#watch">
+								{t('hero.watch')}
+							</a>
+						</div>
+						<p className="hero-meta">{t('hero.meta', { version: DESKTOP_VERSION })}</p>
 					</div>
-					<p className="hero-meta">{t('hero.meta', { version: DESKTOP_VERSION })}</p>
-				</section>
 
-				{/* ONE live Sync InteractiveDemo — owned by the hero. */}
-				<section className="hero-demo" id="demo" aria-label={t('hero.demoLabel')}>
-					<div className="hero-demo-stage">
-						<InteractiveDemo sceneId="sync" />
+					{/* ONE live Sync InteractiveDemo — inside the lens. */}
+					<div className="lens-col">
+						<div className="lens" id="demo" aria-label={t('hero.demoLabel')}>
+							<InteractiveDemo sceneId="sync" />
+						</div>
+						<p className="cli-pill">
+							<span>Copix CLI</span>
+							<code>copix</code>
+							<span className="cli-pill-path">~/Copix</span>
+						</p>
 					</div>
 				</section>
 
 				{/* Sync chapter: static still only — no second live session / IntersectionObserver. */}
-				<section className="demo-chapter scene-sync" id="demo-sync" aria-labelledby="sync-title">
-					<div className="demo-split">
+				<section className="chapter" id="demo-sync" aria-labelledby="sync-title">
+					<div className="panel">
 						<div className="section-head">
 							<p className="chapter-kicker">{t('chapter.sync.kicker')}</p>
 							<h2 id="sync-title">{t('chapter.sync.title')}</h2>
@@ -108,35 +116,29 @@ export default function Landing() {
 								))}
 							</ul>
 						</div>
-						<div className="stage-section">
-							<SyncStaticMock />
-						</div>
+						<SyncStaticMock />
 					</div>
 				</section>
 
-				<section className="demo-chapter scene-tools" id="demo-tools" aria-labelledby="tools-title">
-					<div className="demo-split">
+				<section className="chapter" id="demo-tools" aria-labelledby="tools-title">
+					<div className="panel">
 						<div className="section-head">
 							<p className="chapter-kicker">{t('chapter.tools.kicker')}</p>
 							<h2 id="tools-title">{t('chapter.tools.title')}</h2>
 							<p>{t('chapter.tools.blurb')}</p>
 						</div>
-						<div className="stage-section">
-							<InteractiveDemo sceneId="tools" />
-						</div>
+						<ToolsStill />
 					</div>
 				</section>
 
-				<section className="demo-chapter scene-models" id="demo-models" aria-labelledby="models-title">
-					<div className="demo-split">
+				<section className="chapter" id="demo-models" aria-labelledby="models-title">
+					<div className="panel">
 						<div className="section-head">
 							<p className="chapter-kicker">{t('chapter.models.kicker')}</p>
 							<h2 id="models-title">{t('chapter.models.title')}</h2>
 							<p>{t('chapter.models.blurb')}</p>
 						</div>
-						<div className="stage-section">
-							<InteractiveDemo sceneId="models" />
-						</div>
+						<ModelsStill />
 					</div>
 				</section>
 

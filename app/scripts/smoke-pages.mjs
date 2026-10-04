@@ -68,9 +68,12 @@ for (const bad of ['xattr -cr', 'Gatekeeper', 'damaged and can’t', 'Detected L
 }
 pass('built JS has no quarantine / OS-detect copy');
 
-if (!css.includes('.mac-stage') || !css.includes('.code-line.add')) {
-	fail('built CSS missing mac-stage / diff styles');
+if (!css.includes('.lens') || !css.includes('.code-line.add')) {
+	fail('built CSS missing lens / diff styles');
 }
-pass('built CSS includes stage + diff styles');
+if (css.includes('.mac-stage') || css.includes('.mac-lights') || js.includes('wallpaper.jpg')) {
+	fail('built assets still include mac window chrome or wallpaper');
+}
+pass('built CSS includes the lens + diff styles');
 
 console.log('\nAll Pages smoke checks passed.');
