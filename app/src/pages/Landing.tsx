@@ -1,33 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ModelsStill, ToolsStill } from '../components/ChapterStills';
-import { InteractiveDemo } from '../components/InteractiveDemo';
+import { PixelMark } from '../components/PixelMark';
 import { SiteNav } from '../components/SiteNav';
-import { SyncStaticMock } from '../components/SyncStaticMock';
 import { useLocale } from '../lib/LocaleContext';
-import {
-	CLI_PS,
-	CLI_SH,
-	DESKTOP_VERSION,
-	GITHUB,
-	RELEASES,
-	desktopDownload,
-	type InstallOs,
-} from '../lib/platform';
+import { CLI_PS, CLI_SH, DESKTOP_VERSION, GITHUB, RELEASES } from '../lib/platform';
 import { scrollToHash } from '../lib/scroll';
+import catalog from 'virtual:copix-releases';
 
-const tools = ['create_project', 'edit_file', 'terminal', 'web_search', 'web_fetch'] as const;
+const FACTS = ['machine', 'session', 'account', 'mit'] as const;
 
-type InstallTab = 'desktop' | 'cli';
+const CHAPTERS = [
+	{ id: 'demo-sync', key: 'sync' },
+	{ id: 'demo-tools', key: 'tools' },
+	{ id: 'demo-models', key: 'models' },
+] as const;
+
+const AFTER_INSTALL = `ollama pull qwen2.5:3b
+copix doctor
+copix`;
 
 export default function Landing() {
 	const { t } = useLocale();
-	const [tab, setTab] = useState<InstallTab>('desktop');
-	const [os, setOs] = useState<InstallOs>('mac');
 	const [copied, setCopied] = useState<'sh' | 'ps' | null>(null);
 	const location = useLocation();
 	const demoSrc = `${import.meta.env.BASE_URL}demo.mp4`;
-	const pack = desktopDownload(os);
 
 	useEffect(() => {
 		document.title = t('doc.title');
@@ -36,14 +32,8 @@ export default function Landing() {
 	useEffect(() => {
 		function applyHash(hash: string) {
 			if (!hash) return;
-			if (hash === '#install-cli' || hash === '#cli') {
-				setTab('cli');
-			} else if (hash === '#install') {
-				setTab('desktop');
-			}
 			const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-			const target =
-				hash === '#cli' || hash === '#install-cli' || hash === '#install' ? '#install' : hash;
+			const target = hash === '#cli' ? '#install-cli' : hash;
 			window.setTimeout(() => scrollToHash(target, reduced ? 'auto' : 'smooth'), 40);
 		}
 		applyHash(location.hash);
@@ -66,84 +56,52 @@ export default function Landing() {
 		<div className="page">
 			<SiteNav />
 			<main>
-				<section className="hero">
-					<div className="hero-copy">
-						<p className="hero-kicker">{t('hero.kicker')}</p>
-						<h1 className="hero-title">{t('hero.title')}</h1>
-						<p className="hero-sub">
-							{t('hero.subBefore')} <code>~/Copix</code> {t('hero.subAfter')}
-						</p>
-						<div className="hero-cta">
-							<a className="btn primary lg" href="#install">
-								{t('hero.getDesktop')}
-							</a>
-							<a className="btn ghost lg" href="#install-cli">
-								{t('hero.installCli')}
-							</a>
-							<a className="btn ghost lg" href="#watch">
-								{t('hero.watch')}
-							</a>
-						</div>
-						<p className="hero-meta">{t('hero.meta', { version: DESKTOP_VERSION })}</p>
+				<section className="hero wrap">
+					<p className="kicker">{t('hero.kicker')}</p>
+					<h1 className="hero-title">{t('hero.title')}</h1>
+					<p className="hero-sub">
+						{t('hero.subBefore')} <code>~/Copix</code> {t('hero.subAfter')}
+					</p>
+					<div className="hero-cta">
+						<a className="btn primary" href="#install">
+							{t('hero.getDesktop')}
+						</a>
+						<a className="text-link" href="#install-cli">
+							{t('hero.installCli')}
+						</a>
 					</div>
-
-					{/* ONE live Sync InteractiveDemo — inside the lens. */}
-					<div className="lens-col">
-						<div className="lens" id="demo" aria-label={t('hero.demoLabel')}>
-							<InteractiveDemo sceneId="sync" />
-						</div>
-						<p className="cli-pill">
-							<span>Copix CLI</span>
-							<code>copix</code>
-							<span className="cli-pill-path">~/Copix</span>
-						</p>
-					</div>
+					<p className="hero-meta">{t('hero.meta', { version: DESKTOP_VERSION })}</p>
+					<img
+						className="hero-shot"
+						src={`${import.meta.env.BASE_URL}desktop.png`}
+						alt="Copix Desktop"
+						width={2938}
+						height={1642}
+					/>
 				</section>
 
-				{/* Sync chapter: static still only — no second live session / IntersectionObserver. */}
-				<section className="chapter" id="demo-sync" aria-labelledby="sync-title">
-					<div className="panel">
-						<div className="section-head">
-							<p className="chapter-kicker">{t('chapter.sync.kicker')}</p>
-							<h2 id="sync-title">{t('chapter.sync.title')}</h2>
-							<p>{t('chapter.sync.blurb')}</p>
-							<p className="chapter-note">{t('chapter.sync.note')}</p>
-							<ul className="tool-list" aria-label={t('chapter.toolsLabel')}>
-								{tools.map((name) => (
-									<li key={name}>
-										<code>{name}</code>
-									</li>
-								))}
-							</ul>
-						</div>
-						<SyncStaticMock />
-					</div>
+				<section className="facts wrap" aria-label="Copix">
+					{FACTS.map((id) => (
+						<article className="fact" key={id}>
+							<h2>{t(`facts.${id}.title`)}</h2>
+							<p>{t(`facts.${id}.body`)}</p>
+						</article>
+					))}
 				</section>
 
-				<section className="chapter" id="demo-tools" aria-labelledby="tools-title">
-					<div className="panel">
-						<div className="section-head">
-							<p className="chapter-kicker">{t('chapter.tools.kicker')}</p>
-							<h2 id="tools-title">{t('chapter.tools.title')}</h2>
-							<p>{t('chapter.tools.blurb')}</p>
-						</div>
-						<ToolsStill />
-					</div>
+				<section className="chapters wrap">
+					{CHAPTERS.map((chapter) => (
+						<article key={chapter.id} id={chapter.id}>
+							<PixelMark />
+							<p className="kicker">{t(`chapter.${chapter.key}.kicker`)}</p>
+							<h2 id={`${chapter.key}-title`}>{t(`chapter.${chapter.key}.title`)}</h2>
+							<p>{t(`chapter.${chapter.key}.blurb`)}</p>
+						</article>
+					))}
 				</section>
 
-				<section className="chapter" id="demo-models" aria-labelledby="models-title">
-					<div className="panel">
-						<div className="section-head">
-							<p className="chapter-kicker">{t('chapter.models.kicker')}</p>
-							<h2 id="models-title">{t('chapter.models.title')}</h2>
-							<p>{t('chapter.models.blurb')}</p>
-						</div>
-						<ModelsStill />
-					</div>
-				</section>
-
-				<section className="watch-section" id="watch">
-					<div className="section-head">
+				<section className="watch wrap" id="watch">
+					<div className="watch-copy">
 						<h2>{t('watch.title')}</h2>
 						<p>{t('watch.blurb')}</p>
 					</div>
@@ -154,155 +112,109 @@ export default function Landing() {
 					</figure>
 				</section>
 
-				<section className="install-section" id="install">
-					<span id="install-cli" hidden />
-					<div className="section-head">
-						<h2>{t('install.title')}</h2>
-						<p>{t('install.blurb')}</p>
-					</div>
-
-					<div className="install-tabs" role="tablist" aria-label={t('install.method')}>
-						<button
-							type="button"
-							role="tab"
-							aria-selected={tab === 'desktop'}
-							className={tab === 'desktop' ? 'active' : ''}
-							onClick={() => {
-								setTab('desktop');
-								window.history.replaceState(null, '', '#install');
-							}}
-						>
-							{t('install.tabDesktop')}
-						</button>
-						<button
-							type="button"
-							role="tab"
-							aria-selected={tab === 'cli'}
-							className={tab === 'cli' ? 'active' : ''}
-							onClick={() => {
-								setTab('cli');
-								window.history.replaceState(null, '', '#install-cli');
-							}}
-						>
-							{t('install.tabCli')}
-						</button>
-					</div>
-
-					{tab === 'desktop' ? (
-						<div className="install-panel picker-panel" role="tabpanel">
-							<p className="picker-row">
-								<span className="picker-label">{t('install.for')}</span>
-								<label className="picker-field">
-									<span className="sr-only">{t('install.os')}</span>
-									<select value={os} onChange={(e) => setOs(e.target.value as InstallOs)}>
-										<option value="mac">{t('install.mac')}</option>
-										<option value="win">{t('install.win')}</option>
-									</select>
-								</label>
-							</p>
-							<p className="picker-row">
-								<span className="picker-label">{t('install.running')}</span>
-								<label className="picker-field">
-									<span className="sr-only">{t('install.arch')}</span>
-									<select value={pack.archLabel} onChange={() => undefined}>
-										<option value={pack.archLabel}>{pack.archLabel}</option>
-									</select>
-								</label>
-								<span className="picker-label">{t('install.version')}</span>
-								<label className="picker-field">
-									<span className="sr-only">{t('install.desktopVersion')}</span>
-									<select value={DESKTOP_VERSION} onChange={() => undefined}>
-										<option value={DESKTOP_VERSION}>{DESKTOP_VERSION}</option>
-									</select>
-								</label>
-							</p>
-							<p className="install-hint">{pack.hint}</p>
-							<a className="btn primary lg picker-dl" href={pack.url} target="_blank" rel="noreferrer">
-								{pack.button}
-								<span className="ver-badge">{DESKTOP_VERSION}</span>
+				<section className="install wrap" id="install">
+					<p className="kicker">{t('install.title')}</p>
+					<h2 className="install-lead">{t('install.blurb')}</h2>
+					<div className="latest-downloads">
+						{catalog.latestMac ? (
+							<a className="btn latest" href={catalog.latestMac.url} target="_blank" rel="noreferrer">
+								<span>{t('install.mac')}</span>
+								<span className="latest-ver">{catalog.latestMac.version}</span>
 							</a>
-							<p className="picker-more">
-								<a className="text-link" href={RELEASES} target="_blank" rel="noreferrer">
-									{t('install.allReleases')}
-								</a>
-								{' · '}
-								<button
-									type="button"
-									className="text-link as-button"
-									onClick={() => {
-										setTab('cli');
-										window.history.replaceState(null, '', '#install-cli');
-									}}
-								>
-									{t('install.preferCli')}
-								</button>
-							</p>
+						) : null}
+						{catalog.latestWin ? (
+							<a className="btn latest" href={catalog.latestWin.url} target="_blank" rel="noreferrer">
+								<span>{t('install.win')}</span>
+								<span className="latest-ver">{catalog.latestWin.version}</span>
+							</a>
+						) : null}
+					</div>
+					{catalog.older.length > 0 ? (
+						<div className="older">
+							<h3>{t('install.older')}</h3>
+							<table className="older-table">
+								<thead>
+									<tr>
+										<th scope="col">{t('install.version')}</th>
+										<th scope="col">{t('install.mac')}</th>
+										<th scope="col">{t('install.win')}</th>
+									</tr>
+								</thead>
+								<tbody>
+									{catalog.older.map((row) => (
+										<tr key={row.version}>
+											<th scope="row">{row.version}</th>
+											<td>
+												{row.mac ? (
+													<a className="text-link" href={row.mac.url} target="_blank" rel="noreferrer">
+														{t('install.download')}
+													</a>
+												) : null}
+											</td>
+											<td>
+												{row.win ? (
+													<a className="text-link" href={row.win.url} target="_blank" rel="noreferrer">
+														{t('install.download')}
+													</a>
+												) : null}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
 						</div>
-					) : (
-						<div className="install-panel" role="tabpanel">
-							<p className="install-hint">{t('install.cliHint')}</p>
-							<p className="install-os">
-								<strong>{t('install.macLinux')}</strong>
-							</p>
-							<pre className="install">
-								<code>{CLI_SH}</code>
-							</pre>
-							<div className="install-actions">
-								<button type="button" className="btn primary" onClick={() => void copyText(CLI_SH, 'sh')}>
-									{copied === 'sh' ? t('install.copied') : t('install.copy')}
-								</button>
-							</div>
-
-							<p className="install-os" style={{ marginTop: 20 }}>
-								<strong>{t('install.windowsPs')}</strong>
-							</p>
-							<pre className="install">
-								<code>{CLI_PS}</code>
-							</pre>
-							<div className="install-actions">
-								<button type="button" className="btn ghost" onClick={() => void copyText(CLI_PS, 'ps')}>
-									{copied === 'ps' ? t('install.copied') : t('install.copy')}
-								</button>
-							</div>
-
-							<h3 className="after-title">{t('install.after')}</h3>
-							<pre className="install">
-								<code>{`ollama pull qwen2.5:3b
-copix doctor
-copix`}</code>
-							</pre>
-							<p className="install-hint">
-								{t('install.cliDocsBefore')}{' '}
-								<a className="text-link" href={`${GITHUB}/tree/main/cli`} target="_blank" rel="noreferrer">
-									{t('install.cliDocsLink')}
-								</a>
-								{t('install.cliDocsAfter')}
-							</p>
-						</div>
-					)}
+					) : null}
+					<div className="cli-block" id="install-cli">
+						<p className="kicker">{t('install.tabCli')}</p>
+						<p className="install-arch">Copix CLI</p>
+						<p className="install-hint">{t('install.cliHint')}</p>
+						<p className="install-os">{t('install.macLinux')}</p>
+						<p className="command">{CLI_SH}</p>
+						<button type="button" className="text-link as-button" onClick={() => void copyText(CLI_SH, 'sh')}>
+							{copied === 'sh' ? t('install.copied') : t('install.copy')}
+						</button>
+						<p className="install-os">{t('install.windowsPs')}</p>
+						<p className="command">{CLI_PS}</p>
+						<button type="button" className="text-link as-button" onClick={() => void copyText(CLI_PS, 'ps')}>
+							{copied === 'ps' ? t('install.copied') : t('install.copy')}
+						</button>
+						<h3 className="after-title">{t('install.after')}</h3>
+						<p className="command">{AFTER_INSTALL}</p>
+						<p className="install-hint">
+							{t('install.cliDocsBefore')}{' '}
+							<a className="text-link" href={`${GITHUB}/tree/main/cli`} target="_blank" rel="noreferrer">
+								{t('install.cliDocsLink')}
+							</a>
+							{t('install.cliDocsAfter')}
+						</p>
+					</div>
+					<p className="install-more">
+						<a className="text-link" href={RELEASES} target="_blank" rel="noreferrer">
+							{t('install.allReleases')}
+						</a>
+					</p>
 				</section>
 			</main>
 
 			<footer className="footer">
-				<div className="footer-brand">
-					<img src={`${import.meta.env.BASE_URL}icon.png`} alt="" width={22} height={22} />
-					<span>Copix</span>
+				<div className="wrap footer-inner">
+					<div className="footer-brand">Copix</div>
+					<div className="footer-links">
+						<a href={GITHUB} target="_blank" rel="noreferrer">
+							{t('footer.github')}
+						</a>
+						<a href={RELEASES} target="_blank" rel="noreferrer">
+							{t('footer.releases')}
+						</a>
+						<a href={`${GITHUB}/tree/main/cli`} target="_blank" rel="noreferrer">
+							{t('footer.cliDocs')}
+						</a>
+						<a href={RELEASES} target="_blank" rel="noreferrer">
+							{t('footer.changelog')}
+						</a>
+					</div>
+					<p className="footer-copy">{t('footer.copy', { year: new Date().getFullYear() })}</p>
 				</div>
-				<div className="footer-links">
-					<a href={GITHUB} target="_blank" rel="noreferrer">
-						{t('footer.github')}
-					</a>
-					<a href={RELEASES} target="_blank" rel="noreferrer">
-						{t('footer.releases')}
-					</a>
-					<a href={`${GITHUB}/tree/main/cli`} target="_blank" rel="noreferrer">
-						{t('footer.cliDocs')}
-					</a>
-					<a href={RELEASES} target="_blank" rel="noreferrer">
-						{t('footer.changelog')}
-					</a>
-				</div>
-				<p className="footer-copy">{t('footer.copy', { year: new Date().getFullYear() })}</p>
 			</footer>
 		</div>
 	);

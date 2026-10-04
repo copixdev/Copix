@@ -2,26 +2,27 @@ import { Link } from 'react-router-dom';
 import { LOCALES } from '../lib/i18n';
 import { useLocale } from '../lib/LocaleContext';
 import { GITHUB } from '../lib/platform';
-
-const ICON = `${import.meta.env.BASE_URL}icon.png`;
+import { PixelMark } from './PixelMark';
 
 export function SiteNav() {
 	const { locale, setLocale, t } = useLocale();
 
 	return (
 		<div className="nav-shell">
-			<header className="nav">
-				<Link className="nav-brand" to="/" aria-label="Copix home">
-					<img src={ICON} alt="" width={26} height={26} />
-					<span>Copix</span>
-				</Link>
-				<nav className="nav-links" aria-label="Primary">
-					<a href="#demo">{t('nav.demo')}</a>
-					<a href="#install">{t('nav.install')}</a>
-					<a href={GITHUB} target="_blank" rel="noreferrer">
-						{t('nav.github')}
-					</a>
-				</nav>
+			<header className="nav wrap">
+				<div className="nav-start">
+					<Link className="nav-brand" to="/" aria-label="Copix home">
+						<PixelMark />
+						<span>Copix</span>
+					</Link>
+					<nav className="nav-links" aria-label="Primary">
+						<a href="#watch">{t('nav.demo')}</a>
+						<a href="#install">{t('nav.install')}</a>
+						<a href={GITHUB} target="_blank" rel="noreferrer">
+							{t('nav.github')}
+						</a>
+					</nav>
+				</div>
 				<div className="nav-actions">
 					<label className="nav-lang">
 						<span className="sr-only">{t('nav.lang')}</span>
@@ -39,9 +40,6 @@ export function SiteNav() {
 					</label>
 					<a className="btn primary" href="#install">
 						{t('nav.getDesktop')}
-					</a>
-					<a className="btn ghost" href="#install-cli">
-						{t('nav.cli')}
 					</a>
 				</div>
 			</header>
