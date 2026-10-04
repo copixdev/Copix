@@ -554,9 +554,9 @@ async function runDoctor(api, version, workspaceRoot) {
 		`✓ Workspace ${workspaceRoot}`,
 		'',
 		'No account required — Desktop and CLI are local-only.',
-		`Reinstall: ${ui.cliInstallCommand()}`,
+		'Reinstall: the command below',
 	];
-	console.log(`\n${ui.boxDoctor(rows)}\n`);
+	console.log(`\n${ui.boxDoctor(rows)}\n${ui.cliInstallCommand()}\n`);
 	if (!nodeOk || !agentOk || !status?.online || !models.length) {
 		process.exitCode = 1;
 	}

@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createNodeCopixApi, expandWorkspaceHome, usersDirectoryPrefix } from '../src/nodeApi.js';
-import { displayWidth, helpText, termCols } from '../src/ui.js';
+import { cliInstallCommand, displayWidth, helpText, termCols } from '../src/ui.js';
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'copix-smoke-'));
 const api = createNodeCopixApi();
@@ -53,11 +53,11 @@ if (path.normalize(expanded) !== path.normalize(expectedUsers)) {
 const help = helpText();
 const width = termCols();
 for (const line of help.split('\n')) {
+	if (!/[╭╮╰╯│]/.test(line)) continue;
 	if (displayWidth(line) > width) throw new Error(`help line wider than ${width}: ${line}`);
 }
 if (!help.includes('write_file') || !help.includes('delete_file')) throw new Error('help is missing file tools');
-const install = process.platform === 'win32' ? 'install.ps1' : 'install.sh';
-if (!help.includes(install)) throw new Error(`help install command missing ${install}`);
+if (!help.split('\n').includes(cliInstallCommand())) throw new Error('help install command is not its own line');
 if (process.platform === 'win32' && !help.includes('%USERPROFILE%')) throw new Error('windows help path');
 if (process.platform !== 'win32' && !help.includes('~/Copix/settings.json')) throw new Error('unix help path');
 

@@ -118,6 +118,11 @@ function wrapText(text, width) {
 			lines.push('');
 			continue;
 		}
+		// Keep column spacing when the row already fits (help text, doctor rows).
+		if (displayWidth(paragraph) <= limit) {
+			lines.push(paragraph);
+			continue;
+		}
 		let cur = '';
 		for (const word of paragraph.split(/\s+/)) {
 			if (!word) continue;
@@ -332,6 +337,11 @@ export function boxDoctor(rows) {
 	return box(rows, { label: 'Doctor' });
 }
 
+function alignRows(pairs) {
+	const col = Math.max(...pairs.map(([cmd]) => displayWidth(cmd))) + 2;
+	return pairs.map(([cmd, desc]) => `${cmd}${' '.repeat(col - displayWidth(cmd))}${desc}`);
+}
+
 export function helpText() {
 	const dir = dataDirLabel();
 	const sep = process.platform === 'win32' ? '\\' : '/';
@@ -341,21 +351,25 @@ export function helpText() {
 			'Copix CLI — standalone agent for macOS, Windows, and Linux',
 			'Same tools as Copix Desktop · no account required',
 			'',
-			'copix                     interactive REPL',
-			'copix "prompt"            one-shot',
-			'copix -p <dir> "prompt"   workspace',
-			'copix doctor              environment check',
+			...alignRows([
+				['copix', 'interactive REPL'],
+				['copix "prompt"', 'one-shot'],
+				['copix -p <dir> "prompt"', 'workspace'],
+				['copix doctor', 'environment check'],
+			]),
 			'',
-			'/model [tag|auto]   show or switch model (saved)',
-			'/models             list installed Ollama tags',
-			'/pull <tag>         download a model',
-			'/cwd [path]         show or change workspace (saved)',
-			'/status             ollama · model · workspace · paths',
-			'/doctor             Node, Ollama, models, paths',
-			'/history            recent sessions (Desktop sync)',
-			'/new                fresh conversation',
-			'/clear              wipe screen + fresh conversation',
-			'/exit               quit',
+			...alignRows([
+				['/model [tag|auto]', 'show or switch model (saved)'],
+				['/models', 'list installed Ollama tags'],
+				['/pull <tag>', 'download a model'],
+				['/cwd [path]', 'show or change workspace (saved)'],
+				['/status', 'ollama · model · workspace · paths'],
+				['/doctor', 'Node, Ollama, models, paths'],
+				['/history', 'recent sessions (Desktop sync)'],
+				['/new', 'fresh conversation'],
+				['/clear', 'wipe screen + fresh conversation'],
+				['/exit', 'quit'],
+			]),
 			'',
 			'↑↓ recalls earlier lines · tab completes a / command',
 			'Ctrl+C clears the line · Ctrl+C on an empty line quits',
@@ -364,11 +378,12 @@ export function helpText() {
 			'       delete_file read_file list_dir grep terminal',
 			'       web_search web_fetch multitask spawn_subagent',
 			'',
-			`Install: ${cliInstallCommand()}`,
+			'Install: copy the command printed under this card',
 			`Settings: ${dir}${sep}settings.json`,
-			`History:  ${dir}${sep}sessions.json (shared with Desktop)`,
-			'License:  MIT — open source',
+			`History: ${dir}${sep}sessions.json (shared with Desktop)`,
+			'License: MIT — open source',
 		], { label: 'Help' }),
+		cliInstallCommand(),
 		'',
 	].join('\n');
 }
