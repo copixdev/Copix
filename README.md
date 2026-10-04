@@ -1,66 +1,76 @@
 <p align="center">
-<img width="125" height="118" alt="image" src="https://github.com/user-attachments/assets/957dde62-5029-4c5a-ac62-124ebe9c577c" />
+<img width="125" height="118" alt="Copix" src="https://github.com/user-attachments/assets/957dde62-5029-4c5a-ac62-124ebe9c577c" />
 </p>
 
 <h1 align="center">Copix</h1>
-<p align="center">
-	<strong>Fast. Efficient. Precise.</strong><br/>
-	Your agent to maximize Ollama usability.
-</p>
-<p align="center"><strong>Write, edit, delete, read files and create projects just with a sentence.</strong></p>
 
 <p align="center">
-<img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT">
-<img src="https://img.shields.io/badge/Price-Free-brightgreen.svg" alt="Free">
-<img src="https://img.shields.io/badge/macOS-supported-blue.svg" alt="macOS">
-<img src="https://img.shields.io/badge/Windows-supported-blue.svg" alt="Windows">
+	<strong>Pixel-precise agent for your programming.</strong><br/>
+	A local coding agent for people who want the model to change the project, not hand back a snippet to paste.
 </p>
 
----
-<img width="1469" height="821" alt="image" src="https://github.com/user-attachments/assets/477b3b09-d5a5-4812-8f18-bdc795a25ff6" />
-
----
-
-<p align="center"><strong><a href="https://github.com/copixdev/Copix/blob/main/demo.mov">Watch Demo (.mov)</strong>
-
-
-## Introduction
-Copix is a local agent operating directly on your system.
-Instead of high-price models like gpt-oss, Copix uses faster Ollama models, such as `qwen2.5:3b`.
-
-## How Copix works
-Copix starts working in various ways when the prompt is messaged to Ollama.<br/>
-Copix works like this:
 <p align="center">
-<img width="375" height="280" alt="image" src="https://github.com/user-attachments/assets/57ad16e4-ed4d-4a64-8309-0cdea7024752" />
+	<a href="https://github.com/copixdev/Copix/releases/latest"><strong>Download Desktop</strong></a>
+	&nbsp;·&nbsp;
+	<a href="#try-it"><strong>Try the CLI</strong></a>
+	&nbsp;·&nbsp;
+	<a href="https://github.com/copixdev/Copix/blob/main/demo.mov"><strong>Watch the demo</strong></a>
 </p>
 
-- **The user** inputs the prompt.
-- **Ollama** receives the user prompt and plans how the work should be initialized.
-- **Ollama** uses *Copix tools* to create, read, and manage files.
-- **Ollama** puts an output while working in JSON.
-- **Copix** summarizes the work done by Ollama.
+<p align="center">
+	<img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT">
+	<img src="https://img.shields.io/badge/macOS-Apple%20Silicon-blue.svg" alt="macOS Apple Silicon">
+	<img src="https://img.shields.io/badge/Windows-x64-blue.svg" alt="Windows x64">
+</p>
 
-## Tools
-- `create_project`
-- `multitask`
-- `read_file`
-- `edit_file`
-- `write_file`
-- `append_file`
-- `delete_file`
-- `grep`
-- `list_dir`
-- `web_search`
-- `web_fetch`
-- `terminal`
-- `spawn_subagent`
+Copix runs on your machine, with a local [Ollama](https://ollama.com) model. There is no account. You describe the work. Copix reads the workspace, writes the files, and can run the commands that belong to that task.
 
-## Build
+It is for programmers on **macOS** and **Windows** who already use Ollama (or are willing to install it) and want a Desktop app and a terminal for the same agent.
+
+<p align="center">
+<img width="1469" height="821" alt="Copix Desktop" src="https://github.com/user-attachments/assets/477b3b09-d5a5-4812-8f18-bdc795a25ff6" />
+</p>
+
+## Try it
+
+Install [Ollama](https://ollama.com) first. Copix’s default model is `qwen2.5:3b`.
+
+### Desktop
+
+Current release: **v4.3.0**.
+
+| Platform | Installer |
+| --- | --- |
+| macOS (Apple Silicon) | [`Copix-4.3.0-macOS-arm64.dmg`](release/Copix-4.3.0-macOS-arm64.dmg) |
+| Windows (x64) | [`Copix-4.3.0-Windows-x64.exe`](release/Copix-4.3.0-Windows-x64.exe) |
+
+The same files are on [GitHub Releases](https://github.com/copixdev/Copix/releases/tag/v4.3.0). Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). Older builds are listed in [`release/`](release/).
+
+If macOS says Copix is damaged, that is Gatekeeper quarantine after a browser download. The fix is in [`release/README.md`](release/README.md).
 
 ### CLI
 
-Requires [Node.js 18+](https://nodejs.org) and `git`.
+The CLI is the same agent in the terminal (macOS, Linux, and Windows). It needs [Node.js 18+](https://nodejs.org) and `git`.
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash
+ollama pull qwen2.5:3b
+copix doctor
+copix
+```
+
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex
+ollama pull qwen2.5:3b
+copix doctor
+copix
+```
+
+From a clone, without the installer:
 
 ```bash
 git clone https://github.com/copixdev/Copix.git
@@ -69,65 +79,46 @@ npm install
 npm start
 ```
 
-One-shot install (macOS / Linux):
+One shot, in a chosen folder:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash
+copix -p ~/your-project "add a README section for local setup"
 ```
 
-Windows (PowerShell):
+`copix doctor` checks Node, Ollama, installed models, and where settings live. Full command list: [cli/README.md](cli/README.md).
 
-```powershell
-irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex
-```
+## What it actually does
 
-Then:
+Copix sends your prompt to a local Ollama model, along with tools. The model asks for a tool; Copix runs it on disk and returns the result. When the task is done, Copix replies with what changed.
 
-```bash
-ollama pull qwen2.5:3b
-copix doctor
-copix
-```
+| Tool | What it does |
+| --- | --- |
+| `create_project` | Start a new folder under your home directory (or a path you named) |
+| `write_file`, `edit_file`, `append_file`, `delete_file` | Change files itself — it does not ask you to paste them in |
+| `read_file`, `list_dir`, `grep` | Look before editing |
+| `terminal` | Run a command in the workspace (PowerShell on Windows, zsh on macOS, bash on Linux) |
+| `web_search`, `web_fetch` | Read public docs and pages |
+| `multitask`, `spawn_subagent` | Parallel reads, or a child agent for a large split job |
 
-### Desktop
+The model provider in settings is Ollama. With automatic selection, Copix prefers an installed tag that fits the task. Besides `qwen2.5:3b`, it will use `qwen2.5-coder:7b`, `mistral:7b`, and `qwen3.5:4b` when those are already pulled. `/model <tag>` pins one; `/model auto` turns routing back on.
 
-Prebuilt installers are in [`release/`](release/) and on [GitHub Releases](https://github.com/copixdev/Copix/releases/tag/v4.3.0).
+<p align="center">
+<img width="863" height="469" alt="Copix CLI" src="https://github.com/user-attachments/assets/b64d25ad-39e8-4ad1-9081-3eba91c7e938" />
+</p>
 
-## Programs
-Copix has a **CLI** version and a **Desktop** version. <br/>
+<p align="center"><a href="https://github.com/copixdev/Copix/blob/main/demo.mov"><strong>Watch the demo</strong></a></p>
 
-### CLI
----
-<img width="863" height="469" alt="image" src="https://github.com/user-attachments/assets/b64d25ad-39e8-4ad1-9081-3eba91c7e938" />
+## Desktop and CLI stay in sync
 
-### Desktop
----
-<img width="1469" height="821" alt="image" src="https://github.com/user-attachments/assets/477b3b09-d5a5-4812-8f18-bdc795a25ff6" />
+Both apps store conversations in the same sessions file. A chat you start in the CLI shows up in Desktop history.
 
-## Why Copix?
-Default Ollama app doesn't have any functions like creating or reading files.
-Copix is an advanced agent that maximizes the aspects of Ollama.
+| | macOS | Linux | Windows |
+| --- | --- | --- | --- |
+| Settings | `~/Copix/settings.json` | `~/Copix/settings.json` | `%USERPROFILE%\Copix\settings.json` |
+| Sessions | `~/Copix/sessions.json` | `~/Copix/sessions.json` | `%USERPROFILE%\Copix\sessions.json` |
+| Default workspace | `/Users/{username}` | `/home/{username}` | `C:\Users\{username}` |
 
-Comparison between the two:
-
-| Functions | Default Ollama | Copix | 
-| :-- | :--: | :--: |
-| Command tools | ❌ | ✅ |
-| File creation | ❌ | ✅ |
-| File reading | ❌ | ✅ |
-| JSON output | ❌ | ✅ |
-| Web search | ✅ | ✅ |
-| Dynamic UI | ✅ | ✅ |
-| CLI | ✅ | ✅ | 
-
-## Settings
-Copix's outputs are all created with `JSON`.
-
-| Settings | Default |
-| :-- | :-- |
-| Model provider (model.provider) | Ollama (locked to Ollama) |
-| Model ID (model.modelID) | `qwen2.5:3b` (`qwen2.5-coder:7b`, `qwen3.5:4b` is also available) |
-| Workspace (workspace.homeDirectory) | "/Users/{username}" (can change based on user settings) |
+`{username}` is your account name. Leave `workspace.homeDirectory` empty and Copix uses the real home directory from the OS.
 
 ```json
 {
@@ -141,16 +132,14 @@ Copix's outputs are all created with `JSON`.
 }
 ```
 
-## Installation
-
-Get the latest installers for your OS [here](https://github.com/copixdev/Copix/releases/latest).
-For older versions, try looking at [Releases](https://github.com/copixdev/Copix/releases).
-
+On Windows, set `homeDirectory` to `C:\\Users\\{username}`.
 
 ## License
 
-See [LICENSE.txt](LICENSE.txt). Copix is open source under the MIT License.
+Copix is open source under the [MIT License](LICENSE.txt). Copyright (c) 2026 EJH-BAE.
 
 ## Links
+
+- [Website](https://copixdev.github.io/Copix/)
 - [Ollama](https://ollama.com)
-- [Copix](https://copixdev.github.io/Copix/)
+- [Releases](https://github.com/copixdev/Copix/releases)
