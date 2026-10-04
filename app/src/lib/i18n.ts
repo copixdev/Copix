@@ -27,6 +27,15 @@ const en: Dict = {
 	'hero.meta': 'Desktop v{version} · Apple Silicon + Windows · No login',
 	'hero.demoLabel': 'Copix Desktop Sync demo',
 
+	'facts.machine.title': 'On your machine',
+	'facts.machine.body': 'Ollama locally. Nothing to sign up for.',
+	'facts.session.title': 'One session',
+	'facts.session.body': 'Desktop and CLI share ~/Copix.',
+	'facts.account.title': 'No account',
+	'facts.account.body': 'Install it and start. No login.',
+	'facts.mit.title': 'MIT',
+	'facts.mit.body': 'Free to use. Yours to read.',
+
 	'chapter.sync.kicker': 'Sync',
 	'chapter.sync.title': 'One session under ~/Copix',
 	'chapter.sync.blurb':
@@ -43,7 +52,7 @@ const en: Dict = {
 	'chapter.toolsLabel': 'Agent tools',
 
 	'watch.title': 'Watch demo',
-	'watch.blurb': 'A recorded pass through Copix Desktop. The stages above are the live mocks.',
+	'watch.blurb': 'A recorded pass through Copix Desktop.',
 
 	'install.title': 'Install',
 	'install.blurb': 'Desktop for macOS (M series) and Windows. CLI is the secondary path.',
@@ -52,7 +61,9 @@ const en: Dict = {
 	'install.tabCli': 'CLI',
 	'install.for': 'Copix for',
 	'install.running': 'running',
-	'install.version': 'version',
+	'install.version': 'Version',
+	'install.older': 'Older builds',
+	'install.download': 'Download',
 	'install.os': 'Operating system',
 	'install.arch': 'Architecture',
 	'install.desktopVersion': 'Desktop version',
@@ -107,6 +118,15 @@ const ko: Dict = {
 	'hero.meta': 'Desktop v{version} · Apple Silicon + Windows · 로그인 불필요',
 	'hero.demoLabel': 'Copix Desktop Sync 데모',
 
+	'facts.machine.title': '내 기기에서',
+	'facts.machine.body': 'Ollama를 로컬로 실행합니다. 가입할 것이 없습니다.',
+	'facts.session.title': '하나의 세션',
+	'facts.session.body': 'Desktop과 CLI가 ~/Copix를 공유합니다.',
+	'facts.account.title': '계정 없음',
+	'facts.account.body': '설치하고 바로 시작합니다. 로그인 불필요.',
+	'facts.mit.title': 'MIT',
+	'facts.mit.body': '무료로 사용합니다. 직접 읽을 수 있습니다.',
+
 	'chapter.sync.kicker': 'Sync',
 	'chapter.sync.title': '~/Copix 아래 하나의 세션',
 	'chapter.sync.blurb':
@@ -123,7 +143,7 @@ const ko: Dict = {
 	'chapter.toolsLabel': '에이전트 도구',
 
 	'watch.title': '데모 보기',
-	'watch.blurb': 'Copix Desktop을 통과하는 녹화본입니다. 위 스테이지는 라이브 목입니다.',
+	'watch.blurb': 'Copix Desktop을 통과하는 녹화본입니다.',
 
 	'install.title': '설치',
 	'install.blurb': 'macOS(M series)와 Windows용 Desktop. CLI는 보조 경로입니다.',
@@ -132,7 +152,9 @@ const ko: Dict = {
 	'install.tabCli': 'CLI',
 	'install.for': 'Copix for',
 	'install.running': 'running',
-	'install.version': 'version',
+	'install.version': '버전',
+	'install.older': '이전 빌드',
+	'install.download': '다운로드',
 	'install.os': '운영체제',
 	'install.arch': '아키텍처',
 	'install.desktopVersion': 'Desktop version',
