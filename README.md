@@ -1,5 +1,5 @@
 <p align="center">
-<img width="125" height="118" alt="Copix" src="https://github.com/user-attachments/assets/957dde62-5029-4c5a-ac62-124ebe9c577c" />
+<img width="128" height="128" alt="Copix" src="assets/logo.png" />
 </p>
 
 <h1 align="center">Copix</h1>
@@ -41,10 +41,10 @@ Current release: **v4.3.0**.
 
 | Platform | Installer |
 | --- | --- |
-| macOS (Apple Silicon) | [`Copix-4.3.0-macOS-arm64.dmg`](release/Copix-4.3.0-macOS-arm64.dmg) |
-| Windows (x64) | [`Copix-4.3.0-Windows-x64.exe`](release/Copix-4.3.0-Windows-x64.exe) |
+| macOS (Apple Silicon) | [`Copix-4.3.0-macOS-arm64.dmg`](https://github.com/copixdev/Copix/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg) |
+| Windows (x64) | [`Copix-4.3.0-Windows-x64.exe`](https://github.com/copixdev/Copix/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe) |
 
-The same files are on [GitHub Releases](https://github.com/copixdev/Copix/releases/tag/v4.3.0). Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). Older builds are listed in [`release/`](release/).
+Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). Older builds are listed in [`release/`](release/). The v4.3.0 release page is [v4.3.0](https://github.com/copixdev/Copix/releases/tag/v4.3.0).
 
 If macOS says Copix is damaged, that is Gatekeeper quarantine after a browser download. The fix is in [`release/README.md`](release/README.md).
 
@@ -103,7 +103,7 @@ Copix sends your prompt to a local Ollama model, along with tools. The model ask
 The model provider in settings is Ollama. With automatic selection, Copix prefers an installed tag that fits the task. Besides `qwen2.5:3b`, it will use `qwen2.5-coder:7b`, `mistral:7b`, and `qwen3.5:4b` when those are already pulled. `/model <tag>` pins one; `/model auto` turns routing back on.
 
 <p align="center">
-<img width="863" height="469" alt="Copix CLI" src="https://github.com/user-attachments/assets/b64d25ad-39e8-4ad1-9081-3eba91c7e938" />
+<img width="1248" height="90" alt="Copix CLI prompt" src="assets/cli.png" />
 </p>
 
 <p align="center"><a href="https://github.com/copixdev/Copix/blob/main/demo.mov"><strong>Watch the demo</strong></a></p>
