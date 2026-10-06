@@ -55,7 +55,10 @@ const en: Dict = {
 	'watch.blurb': 'A recorded pass through Copix Desktop.',
 
 	'install.title': 'Install',
-	'install.blurb': 'Desktop for macOS (M series) and Windows. CLI is the secondary path.',
+	'install.blurb': 'Desktop for macOS and Windows.',
+	'install.detail': 'Apple Silicon Macs and 64-bit Windows. Prefer the terminal? The CLI is below.',
+	'install.downloadMac': 'Download for macOS',
+	'install.downloadWin': 'Download for Windows',
 	'install.method': 'Install method',
 	'install.tabDesktop': 'Desktop',
 	'install.tabCli': 'CLI',
@@ -146,7 +149,10 @@ const ko: Dict = {
 	'watch.blurb': 'Copix Desktop을 통과하는 녹화본입니다.',
 
 	'install.title': '설치',
-	'install.blurb': 'macOS(M series)와 Windows용 Desktop. CLI는 보조 경로입니다.',
+	'install.blurb': 'macOS와 Windows용 Desktop.',
+	'install.detail': 'Apple Silicon Mac과 64비트 Windows. 터미널을 선호하시나요? CLI는 아래에 있습니다.',
+	'install.downloadMac': 'macOS용 다운로드',
+	'install.downloadWin': 'Windows용 다운로드',
 	'install.method': '설치 방식',
 	'install.tabDesktop': 'Desktop',
 	'install.tabCli': 'CLI',

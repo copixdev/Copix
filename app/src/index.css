@@ -443,19 +443,27 @@ section[id],
 }
 
 .install-lead {
-	margin: 0 0 clamp(28px, 4vw, 42px);
-	max-width: 16ch;
+	margin: 0;
+	max-width: 12em;
 	font-size: clamp(2.1rem, 4.6vw, 3.5rem);
 	font-weight: 800;
 	letter-spacing: -0.04em;
 	line-height: 0.98;
+	text-wrap: balance;
+}
+
+.install-detail {
+	margin: 14px 0 clamp(28px, 4vw, 42px);
+	max-width: 36rem;
+	color: var(--muted);
+	font-size: 1.02rem;
 }
 
 .latest-downloads {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px;
-	max-width: 560px;
+	width: 100%;
 }
 
 .btn.latest {
@@ -531,9 +539,14 @@ section[id],
 	font-weight: 600;
 }
 
+.older-empty {
+	color: var(--muted);
+}
+
 .cli-block {
 	margin-top: 48px;
-	max-width: 640px;
+	width: 100%;
+	max-width: none;
 	min-width: 0;
 }
 
@@ -657,7 +670,7 @@ section[id],
 	}
 
 	.install-lead {
-		max-width: 20ch;
+		max-width: 12em;
 	}
 
 	.footer-inner {
@@ -702,6 +715,31 @@ section[id],
 		grid-column: 1;
 		grid-row: auto;
 		margin-top: 8px;
+	}
+}
+
+@media (max-width: 560px) {
+	.nav-links {
+		display: none;
+	}
+
+	.nav,
+	.nav-start,
+	.nav-actions {
+		flex-wrap: nowrap;
+	}
+
+	.nav {
+		gap: 8px;
+	}
+
+	.nav-actions {
+		gap: 8px;
+	}
+
+	.nav-actions .btn {
+		padding: 8px 12px;
+		white-space: nowrap;
 	}
 }
 
