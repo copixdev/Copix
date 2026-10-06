@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { LOCALES } from '../lib/i18n';
 import { useLocale } from '../lib/LocaleContext';
 import { GITHUB } from '../lib/platform';
-import { PixelMark } from './PixelMark';
+
+const LOGO = `${import.meta.env.BASE_URL}logo.png`;
 
 export function SiteNav() {
 	const { locale, setLocale, t } = useLocale();
@@ -12,7 +13,7 @@ export function SiteNav() {
 			<header className="nav wrap">
 				<div className="nav-start">
 					<Link className="nav-brand" to="/" aria-label="Copix home">
-						<PixelMark />
+						<img className="nav-logo" src={LOGO} alt="" width={28} height={28} />
 						<span>Copix</span>
 					</Link>
 					<nav className="nav-links" aria-label="Primary">
