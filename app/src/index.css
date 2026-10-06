@@ -494,6 +494,7 @@ section[id],
 	font-weight: 650;
 	letter-spacing: -0.03em;
 	line-height: 1;
+	white-space: nowrap;
 }
 
 .older {
@@ -740,6 +741,10 @@ section[id],
 	.nav-actions .btn {
 		padding: 8px 12px;
 		white-space: nowrap;
+	}
+
+	.latest-downloads {
+		grid-template-columns: minmax(0, 1fr);
 	}
 }
 
