@@ -10,11 +10,11 @@
 </p>
 
 <p align="center">
-	<a href="https://github.com/copixdev/Copix/releases/latest"><strong>Download Desktop</strong></a>
+	<a href="https://github.com/copixdev/copix/releases/latest"><strong>Download Desktop</strong></a>
 	&nbsp;·&nbsp;
 	<a href="#try-it"><strong>Try the CLI</strong></a>
 	&nbsp;·&nbsp;
-	<a href="https://github.com/copixdev/Copix/blob/main/demo.mov"><strong>Watch the demo</strong></a>
+	<a href="https://github.com/copixdev/copix/blob/main/demo.mov"><strong>Watch the demo</strong></a>
 </p>
 
 <p align="center">
@@ -41,10 +41,10 @@ Current release: **v4.3.0**.
 
 | Platform | Installer |
 | --- | --- |
-| macOS (Apple Silicon) | [`Copix-4.3.0-macOS-arm64.dmg`](https://github.com/copixdev/Copix/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg) |
-| Windows (x64) | [`Copix-4.3.0-Windows-x64.exe`](https://github.com/copixdev/Copix/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe) |
+| macOS (Apple Silicon) | [`Copix-4.3.0-macOS-arm64.dmg`](https://github.com/copixdev/copix/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg) |
+| Windows (x64) | [`Copix-4.3.0-Windows-x64.exe`](https://github.com/copixdev/copix/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe) |
 
-Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). Older builds are listed in [`release/`](release/). The v4.3.0 release page is [v4.3.0](https://github.com/copixdev/Copix/releases/tag/v4.3.0).
+Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). Older builds are listed in [`release/`](release/). The v4.3.0 release page is [v4.3.0](https://github.com/copixdev/copix/releases/tag/v4.3.0).
 
 If macOS says Copix is damaged, that is Gatekeeper quarantine after a browser download. The fix is in [`release/README.md`](release/README.md).
 
@@ -55,7 +55,7 @@ The CLI is the same agent in the terminal (macOS, Linux, and Windows). It needs 
 macOS / Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/copixdev/copix/refs/heads/main/cli/install.sh | bash
 ollama pull qwen2.5:3b
 copix doctor
 copix
@@ -64,7 +64,7 @@ copix
 Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/copixdev/Copix/refs/heads/main/cli/install.ps1 | iex
+irm https://raw.githubusercontent.com/copixdev/copix/refs/heads/main/cli/install.ps1 | iex
 ollama pull qwen2.5:3b
 copix doctor
 copix
@@ -73,8 +73,8 @@ copix
 From a clone, without the installer:
 
 ```bash
-git clone https://github.com/copixdev/Copix.git
-cd Copix/cli
+git clone https://github.com/copixdev/copix.git
+cd copix/cli
 npm install
 npm start
 ```
@@ -106,7 +106,7 @@ The model provider in settings is Ollama. With automatic selection, Copix prefer
 <img width="1248" height="90" alt="Copix CLI prompt" src="assets/cli.png" />
 </p>
 
-<p align="center"><a href="https://github.com/copixdev/Copix/blob/main/demo.mov"><strong>Watch the demo</strong></a></p>
+<p align="center"><a href="https://github.com/copixdev/copix/blob/main/demo.mov"><strong>Watch the demo</strong></a></p>
 
 ## Desktop and CLI stay in sync
 
@@ -140,6 +140,6 @@ Copix is open source under the [MIT License](LICENSE.txt). Copyright (c) 2026 EJ
 
 ## Links
 
-- [Website](https://copixdev.github.io/Copix/)
+- [Website](https://copixdev.github.io/copix/)
 - [Ollama](https://ollama.com)
-- [Releases](https://github.com/copixdev/Copix/releases)
+- [Releases](https://github.com/copixdev/copix/releases)
