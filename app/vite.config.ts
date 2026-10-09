@@ -2,7 +2,7 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { catalogFromReleases, type ReleaseInput } from './src/lib/release-catalog';
 
-const RELEASES_API = 'https://api.github.com/repos/copixdev/Copix/releases?per_page=100';
+const RELEASES_API = 'https://api.github.com/repos/copixdev/copix/releases?per_page=100';
 
 async function fetchReleases(): Promise<ReleaseInput[]> {
 	const all: ReleaseInput[] = [];
@@ -43,7 +43,7 @@ function copixReleases(): Plugin {
 			if (!source) {
 				const catalog = catalogFromReleases(await fetchReleases());
 				if (!catalog.latestMac || !catalog.latestWin) {
-					throw new Error('copixdev/Copix releases did not include a latest macOS .dmg and Windows .exe');
+					throw new Error('copixdev/copix releases did not include a latest macOS .dmg and Windows .exe');
 				}
 				source = `export default ${JSON.stringify(catalog)};`;
 			}
@@ -54,7 +54,7 @@ function copixReleases(): Plugin {
 
 export default defineConfig({
 	plugins: [react(), copixReleases()],
-	base: process.env.GITHUB_PAGES === 'true' ? '/Copix/' : '/',
+	base: process.env.GITHUB_PAGES === 'true' ? '/copix/' : '/',
 	server: {
 		host: true,
 		port: 5173,
