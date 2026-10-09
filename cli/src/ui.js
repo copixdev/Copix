@@ -650,12 +650,32 @@ export function writeModelLine(modelId, reason) {
 	stepOpen = true;
 }
 
-export function writeStatus(message) {
+/**
+ * Agent rounds announce the active tag as "qwen2.5:3b…". A color TTY overwrites
+ * the thinking line in place. Plain mode, NO_COLOR, and non-TTY would print a
+ * second line that is only the tag, so those paths get an ASCII label.
+ */
+export function formatQuietModelStatus(message, { plain = true, tty = false } = {}) {
+	if (!(plain || !tty)) return '';
+	const clean = String(message ?? '').replace(/\s+/g, ' ').trim();
+	const match = clean.match(/^(\S+?)(?:\u2026|\.{3})$/);
+	if (!match) return '';
+	return `Loading ${match[1]}...`;
+}
+
+export function writeStatus(message, opts = {}) {
 	stopThinking();
 	if (!message) return;
 	const clean = String(message).replace(/\s+/g, ' ').trim();
 	if (!clean) return;
 	disarmToolRow();
+	const tty = opts.tty !== undefined ? Boolean(opts.tty) : Boolean(process.stdout.isTTY);
+	const labeled = formatQuietModelStatus(clean, { plain: plainMode, tty });
+	if (labeled) {
+		console.log(labeled);
+		stepOpen = true;
+		return;
+	}
 	if (plainMode) {
 		console.log(scrubPlain(clean));
 		stepOpen = true;

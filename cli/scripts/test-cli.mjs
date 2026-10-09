@@ -39,6 +39,7 @@ import {
 	THINKING_FRAME_MS,
 	THINKING_LOOP_MS,
 	formatThinkingLine,
+	formatQuietModelStatus,
 	formatTypoHint,
 	helpText,
 	isPlain,
@@ -60,6 +61,7 @@ import {
 	termCols,
 	writeAssistantDelta,
 	writeError,
+	writeStatus,
 	writeToolCall,
 	wrappedRowCount,
 } from '../src/ui.js';
@@ -274,7 +276,7 @@ test('plain mode and NO_COLOR omit middle dots, arrows, hexagons, and check mark
 	}
 
 	const child = spawnSync(process.execPath, ['--input-type=module', '-e', `
-		import { isPlain, helpText, keysText, startCardLines, formatStatusLine, formatToolLine, formatFileDiff, renderReply, modelListText, statusText, formatThinkingLine, formatTypoHint, contextText, contextReport, explainError, startThinking } from './src/ui.js';
+		import { isPlain, helpText, keysText, startCardLines, formatStatusLine, formatToolLine, formatFileDiff, renderReply, modelListText, statusText, formatThinkingLine, formatTypoHint, contextText, contextReport, explainError, startThinking, writeStatus } from './src/ui.js';
 		import { renderPickerLines, modelChoices } from './src/select.js';
 		if (!isPlain()) process.exit(2);
 		const text = [
@@ -311,6 +313,13 @@ test('plain mode and NO_COLOR omit middle dots, arrows, hexagons, and check mark
 		startThinking();
 		console.log = origLog;
 		if (logs.length !== 1 || logs[0] !== 'Thinking\\u2026' || logs[0].includes('\\x1b')) process.exit(7);
+		const statusLogs = [];
+		console.log = (...args) => statusLogs.push(args.join(' '));
+		writeStatus('qwen2.5:3b\\u2026', { tty: true });
+		writeStatus('qwen2.5:3b\\u2026', { tty: false });
+		console.log = origLog;
+		const status = statusLogs.join('\\n');
+		if (status !== 'Loading qwen2.5:3b...\\nLoading qwen2.5:3b...' || status.includes('\\x1b') || /[·→⬢✓✗▪▸…]/.test(status)) process.exit(8);
 		if (text.includes('\\x1b')) process.exit(4);
 		if (/[·→⬢✓✗▪▸▀▄█▌▐]/.test(text)) process.exit(3);
 		process.stdout.write('plain-ok');
@@ -824,6 +833,43 @@ test('thinking resize refits the line and plain or non-TTY stays static', () => 
 	assert.equal(lines.join('').includes('\x1b'), false);
 	assert.doesNotMatch(lines.join(''), /[·→⬢✓✗▪▸▀▄█▌▐⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏]/);
 	resetThinking();
+});
+
+test('plain and non-TTY model status names the model it is loading', () => {
+	const tag = 'qwen2.5:3b\u2026';
+	const expectLine = 'Loading qwen2.5:3b...';
+	assert.equal(formatQuietModelStatus(tag, { plain: true, tty: true }), expectLine);
+	assert.equal(formatQuietModelStatus(tag, { plain: false, tty: false }), expectLine);
+	assert.equal(formatQuietModelStatus('qwen2.5:3b...', { plain: true, tty: false }), expectLine);
+	assert.equal(formatQuietModelStatus(tag, { plain: false, tty: true }), '');
+	assert.equal(formatQuietModelStatus('rate limited, then retrying\u2026', { plain: true, tty: false }), '');
+	assert.equal(expectLine.includes('\x1b'), false);
+	assert.doesNotMatch(expectLine, /[·→⬢✓✗▪▸…▀▄█▌▐]/);
+
+	setPlain(true);
+	try {
+		const plainLines = captureLog(() => {
+			writeStatus(tag, { tty: true });
+			writeStatus('compacting context', { tty: true });
+		});
+		assert.deepEqual(plainLines, [expectLine, 'compacting context']);
+	} finally {
+		setPlain(false);
+	}
+
+	const quietLines = captureLog(() => writeStatus(tag, { tty: false }));
+	assert.deepEqual(quietLines, [expectLine]);
+
+	const out = hookStdout();
+	try {
+		const colorLines = captureLog(() => writeStatus(tag, { tty: true }));
+		assert.deepEqual(colorLines, []);
+		assert.match(out.text(), /\r/);
+		assert.match(out.text(), /qwen2\.5:3b\u2026/);
+		assert.equal(out.text().includes('Loading'), false);
+	} finally {
+		out.restore();
+	}
 });
 
 test('commands, typo hints, context, copy, and undo', () => {
