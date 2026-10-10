@@ -30,7 +30,7 @@ export type ReleaseInput = {
 };
 
 const VERSION = /(\d+)\.(\d+)\.(\d+)/;
-const RELEASE_HOST = 'https://github.com/copixdev/Copix/releases/download/';
+const RELEASE_HOST = 'https://github.com/copixdev/copix/releases/download/';
 
 function versionOf(tag: string): string | null {
 	const match = tag.match(VERSION);

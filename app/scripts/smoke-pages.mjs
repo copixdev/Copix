@@ -34,9 +34,9 @@ if (!existsSync(join(dist, 'icon.png'))) fail('dist/icon.png missing');
 if (!existsSync(join(dist, 'desktop.png'))) fail('dist/desktop.png missing');
 
 const html = readFileSync(join(dist, 'index.html'), 'utf8');
-if (!html.includes('/Copix/assets/')) fail('index.html missing /Copix/ asset base');
-if (!html.includes('href="/Copix/')) fail('index.html missing /Copix/ favicon or asset href');
-pass('dist/index.html uses /Copix/ base');
+if (!html.includes('/copix/assets/')) fail('index.html missing /copix/ asset base');
+if (!html.includes('href="/copix/')) fail('index.html missing /copix/ favicon or asset href');
+pass('dist/index.html uses /copix/ base');
 
 const assetDir = join(dist, 'assets');
 const assets = existsSync(assetDir) ? readdirSync(assetDir) : [];
@@ -49,11 +49,11 @@ const js = readFileSync(join(assetDir, jsName), 'utf8');
 const css = readFileSync(join(assetDir, cssName), 'utf8');
 
 for (const needle of [
-	'https://github.com/copixdev/Copix/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg',
-	'https://github.com/copixdev/Copix/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe',
-	'https://github.com/copixdev/Copix/releases/download/v4.2.0_macOS/Copix-4.2.0-macOS-arm64.dmg',
-	'https://github.com/copixdev/Copix/releases/download/v4.1.0/Copix-4.1.0-Windows-x64.exe',
-	'https://github.com/copixdev/Copix/releases/download/v4.0.0/Copix-Setup-4.0.0-x64.exe',
+	'https://github.com/copixdev/copix/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg',
+	'https://github.com/copixdev/copix/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe',
+	'https://github.com/copixdev/copix/releases/download/v4.2.0_macOS/Copix-4.2.0-macOS-arm64.dmg',
+	'https://github.com/copixdev/copix/releases/download/v4.1.0/Copix-4.1.0-Windows-x64.exe',
+	'https://github.com/copixdev/copix/releases/download/v4.0.0/Copix-Setup-4.0.0-x64.exe',
 	'Desktop for macOS and Windows.',
 	'Download for macOS',
 	'Download for Windows',
