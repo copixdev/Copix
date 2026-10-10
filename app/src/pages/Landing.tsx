@@ -19,6 +19,11 @@ const AFTER_INSTALL = `ollama pull qwen2.5:3b
 copix doctor
 copix`;
 
+function fileSuffix(name: string) {
+	const dot = name.lastIndexOf('.');
+	return dot >= 0 ? name.slice(dot) : '';
+}
+
 export default function Landing() {
 	const { t } = useLocale();
 	const [copied, setCopied] = useState<'sh' | 'ps' | null>(null);
@@ -106,7 +111,7 @@ export default function Landing() {
 						<p>{t('watch.blurb')}</p>
 					</div>
 					<figure className="watch-video">
-						<video controls playsInline preload="metadata" poster={`${import.meta.env.BASE_URL}icon.png`}>
+						<video controls playsInline preload="metadata" poster={`${import.meta.env.BASE_URL}desktop.png`}>
 							<source src={demoSrc} type="video/mp4" />
 						</video>
 					</figure>
@@ -115,17 +120,22 @@ export default function Landing() {
 				<section className="install wrap" id="install">
 					<p className="kicker">{t('install.title')}</p>
 					<h2 className="install-lead">{t('install.blurb')}</h2>
+					<p className="install-detail">{t('install.detail')}</p>
 					<div className="latest-downloads">
 						{catalog.latestMac ? (
 							<a className="btn latest" href={catalog.latestMac.url} target="_blank" rel="noreferrer">
-								<span>{t('install.mac')}</span>
-								<span className="latest-ver">{catalog.latestMac.version}</span>
+								<span>{t('install.downloadMac')}</span>
+								<span className="latest-ver">
+									{catalog.latestMac.version} · {fileSuffix(catalog.latestMac.name)}
+								</span>
 							</a>
 						) : null}
 						{catalog.latestWin ? (
 							<a className="btn latest" href={catalog.latestWin.url} target="_blank" rel="noreferrer">
-								<span>{t('install.win')}</span>
-								<span className="latest-ver">{catalog.latestWin.version}</span>
+								<span>{t('install.downloadWin')}</span>
+								<span className="latest-ver">
+									{catalog.latestWin.version} · {fileSuffix(catalog.latestWin.name)}
+								</span>
 							</a>
 						) : null}
 					</div>
@@ -149,14 +159,18 @@ export default function Landing() {
 													<a className="text-link" href={row.mac.url} target="_blank" rel="noreferrer">
 														{t('install.download')}
 													</a>
-												) : null}
+												) : (
+													<span className="older-empty">—</span>
+												)}
 											</td>
 											<td>
 												{row.win ? (
 													<a className="text-link" href={row.win.url} target="_blank" rel="noreferrer">
 														{t('install.download')}
 													</a>
-												) : null}
+												) : (
+													<span className="older-empty">—</span>
+												)}
 											</td>
 										</tr>
 									))}
