@@ -9,6 +9,8 @@
 <p align="center">
 	<a href="#download"><strong>Download</strong></a>
 	&nbsp;·&nbsp;
+	<a href="https://copixdev.github.io/copix/"><strong>Website</strong></a>
+	&nbsp;·&nbsp;
 	<a href="#what-it-does"><strong>What it does</strong></a>
 	&nbsp;·&nbsp;
 	<a href="#quick-start"><strong>Quick start</strong></a>
