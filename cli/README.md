@@ -4,7 +4,7 @@ Standalone terminal coding agent for **macOS** and **Windows** — same tools as
 
 **No account.** Local [Ollama](https://ollama.com) only. The agent **creates and edits files for you** — it does not ask you to paste code into the project. Copix is open source (MIT) — see [LICENSE.txt](../LICENSE.txt).
 
-Desktop installers: [`release/`](../release/) · [v4.3.0](https://github.com/copixdev/copix/releases/tag/v4.3.0).
+Desktop installers: [`release/`](../release/) · [v4.4.0](https://github.com/copixdev/copix/releases/tag/v4.4.0).
 
 ## Install
 

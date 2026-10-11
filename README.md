@@ -20,14 +20,14 @@
 
 ## Download
 
-**Copix Desktop v4.3.0.** Install [Ollama](https://ollama.com) first. The default model is `qwen2.5:3b`.
+**Copix Desktop v4.4.0.** Install [Ollama](https://ollama.com) first. The default model is `qwen2.5:3b`.
 
 | Platform | Installer |
 | --- | --- |
-| macOS (Apple Silicon) | [`Copix-4.3.0-macOS-arm64.dmg`](https://github.com/copixdev/copix/releases/download/v4.3.0/Copix-4.3.0-macOS-arm64.dmg) |
-| Windows (x64) | [`Copix-4.3.0-Windows-x64.exe`](https://github.com/copixdev/copix/releases/download/v4.3.0/Copix-4.3.0-Windows-x64.exe) |
+| macOS (Apple Silicon) | [`Copix-4.4.0-macOS-arm64.dmg`](https://github.com/copixdev/copix/releases/download/v4.4.0/Copix-4.4.0-macOS-arm64.dmg) |
+| Windows (x64) | [`Copix-4.4.0-Windows-x64.exe`](https://github.com/copixdev/copix/releases/download/v4.4.0/Copix-4.4.0-Windows-x64.exe) |
 
-Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). Older builds are in [`release/`](release/). Release page: [v4.3.0](https://github.com/copixdev/copix/releases/tag/v4.3.0).
+Checksums: [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt). **Regenerate `release/SHA256SUMS.txt` after the v4.4.0 build.** The file in the repo still describes the 4.3.0 binaries. Older builds are in [`release/`](release/). Release page: [v4.4.0 — logo renewal](https://github.com/copixdev/copix/releases/tag/v4.4.0).
 
 If macOS says Copix is damaged, that is Gatekeeper quarantine. The fix is in [`release/README.md`](release/README.md).
 
@@ -96,7 +96,9 @@ npm install
 npm start
 ```
 
-Requires [Node.js 18+](https://nodejs.org) and git. `npm test` runs the CLI tests. Copix Desktop is the installers above. This repository contains the CLI.
+Requires [Node.js 18+](https://nodejs.org) and git. `npm test` runs the CLI tests.
+
+Desktop source is [`macOS/studio`](macOS/studio) and [`Windows/studio`](Windows/studio). Dispatch the **Desktop v4.4.0** workflow from `main`. Its macOS and Windows runners attach `Copix-4.4.0-macOS-arm64.dmg` and `Copix-4.4.0-Windows-x64.exe` to the release **v4.4.0 — logo renewal**. Then regenerate [`release/SHA256SUMS.txt`](release/SHA256SUMS.txt) from those installers.
 
 ## License
 
