@@ -9,7 +9,7 @@
 <p align="center">
 	<a href="#download"><strong>Download</strong></a>
 	&nbsp;·&nbsp;
-	<a href="https://copixdev.github.io/copix/"><strong>Website</strong></a>
+	<a href="https://copixdev.github.io"><strong>Website</strong></a>
 	&nbsp;·&nbsp;
 	<a href="#what-it-does"><strong>What it does</strong></a>
 	&nbsp;·&nbsp;
@@ -36,13 +36,13 @@ If macOS says Copix is damaged, that is Gatekeeper quarantine. The fix is in [`r
 macOS / Linux:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/copixdev/copix/refs/heads/main/cli/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/copixdev/copix-cli/refs/heads/main/install.sh | bash
 ```
 
 Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/copixdev/copix/refs/heads/main/cli/install.ps1 | iex
+irm https://raw.githubusercontent.com/copixdev/copix-cli/refs/heads/main/install.ps1 | iex
 ```
 
 ## What it does
@@ -98,8 +98,14 @@ npm start
 
 Requires [Node.js 18+](https://nodejs.org) and git. `npm test` runs the CLI tests. Copix Desktop is the installers above. This repository contains the CLI.
 
+## Repositories
+
+- [CLI](https://github.com/copixdev/copix-cli)
+- [Desktop](https://github.com/copixdev/copix-desktop)
+- [Website](https://github.com/copixdev/copixdev.github.io)
+
 ## License
 
 [MIT](LICENSE.txt). Copyright (c) 2026 EJH-BAE.
 
-[Website](https://copixdev.github.io/copix/) · [Releases](https://github.com/copixdev/copix/releases) · [CLI reference](cli/README.md)
+[Website](https://copixdev.github.io) · [Releases](https://github.com/copixdev/copix/releases) · [CLI reference](cli/README.md)
