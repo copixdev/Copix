@@ -1,27 +1,7 @@
 # Copix public site
 
-Marketing site for **Copix Desktop** and **Copix CLI**.
+This branch redirects [https://copixdev.github.io/copix/](https://copixdev.github.io/copix/) to [https://copixdev.github.io/](https://copixdev.github.io/).
 
-**Live:** https://copixdev.github.io/copix/
+JavaScript sends the visitor to the new site and keeps the path, query, and hash (`#install`, `#demo`). A meta refresh is the fallback, and the script rewrites that refresh URL to the same target.
 
-- No accounts, no Copix Web app  
-- Desktop installers from [Releases](https://github.com/copixdev/copix/releases)  
-- Standalone CLI via `curl | bash` (macOS/Linux) and `irm | iex` (Windows) — see `main` branch `cli/`
-
-Copix is **open source** under the [MIT License](https://github.com/copixdev/copix/blob/main/LICENSE.txt).
-
-## Develop
-
-```bash
-./dev.sh
-# or: cd app && npm run dev
-```
-
-## Build (GitHub Pages)
-
-```bash
-cd app
-GITHUB_PAGES=true npm run build
-```
-
-The workflow in `.github/workflows/pages.yml` builds with `base: /copix/` and deploys the `app/dist` output.
+The site source now lives in [copixdev/copixdev.github.io](https://github.com/copixdev/copixdev.github.io).
